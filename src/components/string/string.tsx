@@ -80,7 +80,7 @@ export const StringComponent: React.FC = () => {
           extraClass={styles.input}
           isLimitText={true}
           maxLength={11}
-          formOfWord={"символов"}
+          // formOfWord={"символов"}
           onChange={handleChange}
         />
 
