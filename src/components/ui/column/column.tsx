@@ -1,16 +1,16 @@
 import React from "react";
 import styles from "./column.module.css";
-import { ElementStates } from "../../../types/element-states";
+import { TStatusObject } from "../../../types/statusObject";
 
 interface ColumnProps {
   index: number;
-  state?: ElementStates;
+  state?:TStatusObject;
   extraClass?: string;
 }
 
 export const Column: React.FC<ColumnProps> = ({
   index,
-  state = ElementStates.Default,
+  state = "default",
   extraClass = "",
 }) => (
   <div className={`${styles.content} ${extraClass}`}>

@@ -1,0 +1,1 @@
+export type TStatusObject= 'default' | 'changing'| 'modified'

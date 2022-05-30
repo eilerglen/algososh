@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./circle.module.css";
-import { ElementStates } from "../../../types/element-states";
+import { TStatusObject } from "../../../types/statusObject";
 
 interface CircleProps {
-  state?: ElementStates;
+  state?: TStatusObject;
   letter?: string;
   head?: string | React.ReactElement | null;
   index?: number;
@@ -14,7 +14,7 @@ interface CircleProps {
 }
 
 export const Circle: React.FC<CircleProps> = ({
-  state = ElementStates.Default,
+  state = "default",
   letter,
   head,
   index,
