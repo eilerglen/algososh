@@ -11,12 +11,12 @@ interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   sorting?: TDirection;
   linkedList?: "small" | "big";
   isLoader?: boolean;
-  extraClass?: string;
+  mixin?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   text,
-  extraClass = "",
+  mixin = "",
   type = "button",
   isLoader = false,
   sorting,
@@ -30,7 +30,7 @@ export const Button: React.FC<ButtonProps> = ({
     styles.button
   } ${linkedList && styles[linkedList]} ${
     isLoader && styles.loader
-  } ${extraClass}`;
+  } ${mixin}`;
 
   return (
     <button

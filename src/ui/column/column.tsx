@@ -1,14 +1,14 @@
 import React, { FC } from "react";
 import styleColumn from "./column.module.css";
-export type TStatusObject = "default" | "changing" | "modified";
+import {TStatusObject} from '../../types/statusObject'
 
 interface ColumnProps {
   index: number;
   state: TStatusObject;
-  mixin: string;
+  mixin?: string;
 }
 
-export const Column: FC<ColumnProps> = ({ index, state, mixin }) => {
+export const Column: FC<ColumnProps> = ({ index, state = TStatusObject.Default, mixin }) => {
   return (
     <div className={`${styleColumn.content} ${mixin}`}>
       <div className={`${styleColumn.column} ${styleColumn[state]}`}

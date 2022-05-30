@@ -1,1 +1,6 @@
-export type TStatusObject= 'default' | 'changing'| 'modified'
+export enum TStatusObject {
+    Default = "default",
+    Changing = "changing",
+    Modified = "modified",
+    Chosen = "chosen"
+  }
