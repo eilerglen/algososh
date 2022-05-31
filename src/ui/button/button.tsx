@@ -1,22 +1,22 @@
 import React from "react";
 import styles from "./button.module.css";
-import loaderIcon from "../../../images/icons/loader.svg";
-import { AscendingIcon } from "../icons/ascending-icon";
-import { DescendingIcon } from "../icons/descending-icon";
-import { Direction } from "../../../types/direction";
+import loaderIcon from "../../images/icons/loader.svg";
+import { Ascending } from "../../ui/icons/ascending/ascending";
+import { Descending } from "../../ui/icons/descending/descending";
+import  {TDirection}  from "../../types/direction";
 
 interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   text?: string;
   type?: "button" | "submit" | "reset";
-  sorting?: Direction;
+  sorting?: TDirection;
   linkedList?: "small" | "big";
   isLoader?: boolean;
-  extraClass?: string;
+  mixin?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   text,
-  extraClass = "",
+  mixin = "",
   type = "button",
   isLoader = false,
   sorting,
@@ -25,12 +25,12 @@ export const Button: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   const currentIcon =
-    sorting === Direction.Ascending ? <AscendingIcon /> : <DescendingIcon />;
+    sorting === "ascending" ? <Ascending /> : <Descending />;
   const className = `text text_type_button text_color_primary ${
     styles.button
   } ${linkedList && styles[linkedList]} ${
     isLoader && styles.loader
-  } ${extraClass}`;
+  } ${mixin}`;
 
   return (
     <button

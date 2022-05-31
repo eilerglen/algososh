@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
-import { Button } from "../ui/button/button";
+import { Button } from "../../ui/button/button";
 import { Circle } from "../ui/circle/circle";
-import { ElementStates } from "../../types/element-states";
+import { TStatusObject} from "../../types/statusObject";
 
 import styles from "./string.module.css";
-import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import {  SHORT_PAUSE } from "../../constants/pauseLimits";
 
 interface symbolProps {
   symbol: string;
-  state: ElementStates;
+  state:TStatusObject;
 }
 
 export const StringComponent: React.FC = () => {
@@ -39,12 +39,12 @@ export const StringComponent: React.FC = () => {
     let end = arr.length - 1;
     for (let start = 0; start <= end; start++) {
       if (start === end) {
-        changeState(arr, ElementStates.Changing, start);
-        changeState(arr, ElementStates.Modified, start);
+        changeState(arr, "changing", start);
+        changeState(arr, "modified", start);
       }
-      changeState(arr, ElementStates.Changing, start, end);
+      changeState(arr, "changing", start, end);
       swap(arr, start, end);
-      changeState(arr, ElementStates.Modified, start, end);
+      changeState(arr, "modified", start, end);
       end--;
     }
     setInProgress(false);
@@ -55,7 +55,7 @@ export const StringComponent: React.FC = () => {
     setCharArr(event.target.value.split('').map((symbol: any) => {
       return {
         symbol: symbol,
-        state: ElementStates.Default
+        state: "default",
       }
     }))
   }
@@ -65,7 +65,7 @@ export const StringComponent: React.FC = () => {
     //Вернуть в дефолтное состояние, если строка уже отсортирована.
     if (charArr[0].state === 'modified') {
       setCharArr(charArr.map((symbol: any) => {
-        symbol.state = ElementStates.Default;
+        symbol.state = "default";
         return symbol
       }))
     }
