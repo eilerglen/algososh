@@ -5,6 +5,6 @@ export const swap = (arr: Array<columnObject>, left: number, right: number ) => 
     arr[right] = temp
 }
 
-export const pause = async () => {
-    return new Promise(resolve => setTimeout(resolve))
+export const pause = async (ms: number) => {
+    return new Promise(resolve => setTimeout(resolve, ms))
 }

@@ -6,7 +6,7 @@ import { Circle } from "../ui/circle/circle";
 import { TStatusObject} from "../../types/statusObject";
 
 import styles from "./string.module.css";
-import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import {  SHORT_PAUSE } from "../../constants/pauseLimits";
 
 interface symbolProps {
   symbol: string;

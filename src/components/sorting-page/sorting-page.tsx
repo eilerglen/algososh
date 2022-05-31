@@ -1,40 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Button } from "../../ui/button/button";
-import { RadioButton} from "../../ui/radio-button/radio-button";
+import { RadioButton } from "../../ui/radio-button/radio-button";
 import { swap, pause } from "../../utils/utils";
 import stylesSortingPage from "./sorting.page.module.css";
 import { Column } from "../../ui/column/column";
-import {TStatusObject} from '../../types/statusObject'
+import { TStatusObject } from "../../types/statusObject";
 import { TDirection } from "../../types/direction";
 import { generateRandomArr } from "../../utils/generateRandomArr";
-import { bubbleSort} from '../../utils/sortswitcher/bubbleSort'
+import { bubbleSort } from "../../utils/sortswitcher/bubbleSort";
+import { selectionSort } from "../../utils/sortswitcher/selectionSort";
 import { columnObject } from "../../types/columns";
-
 
 export const SortingPage: React.FC = () => {
   const [sortType, setSortType] = useState<string>("selection");
   const [initialArr, setInitialArr] = useState<Array<columnObject>>([]);
 
-const generateArr = () => {
-  setInitialArr([...generateRandomArr()])
-}
- 
-useEffect(() => {
-  generateArr()
-},[])
+  const generateArr = () => {
+    setInitialArr([...generateRandomArr()]);
+  };
 
-
-
-//  //Функция запуска сортировки
-//   const handleClickSorting = (direction:TDirection, sortType: string) => {
-//     if (sortType === "bubble") {
-//       bubbleSort (direction, initialArr);
-//     }
-//     else console.log("fdsfsf")
-//   };
-
-
+  useEffect(() => {
+    generateArr();
+  }, []);
 
   return (
     <SolutionLayout title="Сортировка массива">
@@ -60,13 +48,8 @@ useEffect(() => {
           type="submit"
           onClick={() =>
             sortType === "bubble"
-              ? bubbleSort(
-                  "ascending",
-                  setInitialArr,
-                  initialArr
-                )
-                : 
-                console.log(124)
+              ? bubbleSort("ascending", setInitialArr, initialArr)
+              : selectionSort("ascending", setInitialArr, initialArr)
           }
         />
         <Button
@@ -76,15 +59,9 @@ useEffect(() => {
           type="submit"
           onClick={() =>
             sortType === "bubble"
-              ? bubbleSort(
-                  "descending",
-                  setInitialArr,
-                  initialArr
-                )
-                : 
-                console.log(124)
+              ? bubbleSort("descending", setInitialArr, initialArr)
+              : selectionSort("descending", setInitialArr, initialArr)
           }
-          
         />
         <Button
           text="Новый массив"

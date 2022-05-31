@@ -4,7 +4,7 @@ import {TStatusObject} from '../../types/statusObject'
 
 interface ColumnProps {
   index: number;
-  state: TStatusObject;
+  state?: TStatusObject;
   mixin?: string;
 }
 
