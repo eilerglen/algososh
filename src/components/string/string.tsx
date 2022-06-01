@@ -4,9 +4,10 @@ import { Input } from "../ui/input/input";
 import { Button } from "../../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { TStatusObject} from "../../types/statusObject";
-
+import { swap, pause } from "../../utils/utils";
 import styles from "./string.module.css";
 import {  SHORT_PAUSE } from "../../constants/pauseLimits";
+import {changeState} from './utils'
 
 interface symbolProps {
   symbol: string;
@@ -17,34 +18,24 @@ export const StringComponent: React.FC = () => {
   const [charArr, setCharArr] = useState<Array<symbolProps>>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
-  //Изменить статус/внешний вид символов.
-  const changeState = (arr: any, status: string, start: number, end?: number) => {
-    arr[start].state = status;
-    if (end) {
-      arr[end].state = status;
-    }
-    setCharArr([...arr]);
-  }
-
-  //Перестановка двух символов.
-  const swap = (arr: Array<symbolProps>, leftInd: number, rightInd: number) => {
-    const temp = arr[leftInd];
-    arr[leftInd] = arr[rightInd];
-    arr[rightInd] = temp;
-  }
-
-  //Переставить символы с анимацией.
-  const recursion = async (arr: Array<symbolProps>) => {
+  const stringReverse = async (arr: Array<symbolProps>) => {
     setInProgress(true);
     let end = arr.length - 1;
     for (let start = 0; start <= end; start++) {
       if (start === end) {
         changeState(arr, "changing", start);
+        setCharArr([...arr])
+        await pause( SHORT_PAUSE )
         changeState(arr, "modified", start);
+        setCharArr([...arr])
       }
       changeState(arr, "changing", start, end);
+      setCharArr([...arr])
+      await pause( SHORT_PAUSE )
       swap(arr, start, end);
       changeState(arr, "modified", start, end);
+      setCharArr([...arr])
+      await  pause( SHORT_PAUSE )
       end--;
     }
     setInProgress(false);
@@ -69,7 +60,7 @@ export const StringComponent: React.FC = () => {
         return symbol
       }))
     }
-    recursion(charArr);
+    stringReverse(charArr);
   }
 
   return (
