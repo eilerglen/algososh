@@ -8,8 +8,8 @@ import { Column } from "../../ui/column/column";
 import { TStatusObject } from "../../types/statusObject";
 import { TDirection } from "../../types/direction";
 import { generateRandomArr } from "../../utils/generateRandomArr";
-import { bubbleSort } from "../../utils/sortswitcher/bubbleSort";
-import { selectionSort } from "../../utils/sortswitcher/selectionSort";
+import { bubbleSort } from "./utils/bubbleSort";
+import { selectionSort } from "./utils/selectionSort";
 import { columnObject } from "../../types/columns";
 
 export const SortingPage: React.FC = () => {

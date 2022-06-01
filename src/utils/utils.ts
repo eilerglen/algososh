@@ -1,5 +1,5 @@
 import { columnObject } from "../types/columns";
-export const swap = (arr: Array<columnObject>, left: number, right: number ) => {
+export const swap = (arr: Array<any>, left: number, right: number ) => {
     const temp = arr[left];
     arr[left] = arr[right];
     arr[right] = temp
