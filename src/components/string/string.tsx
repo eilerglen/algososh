@@ -7,7 +7,7 @@ import { TStatusObject} from "../../types/statusObject";
 import { swap, pause } from "../../utils/utils";
 import styles from "./string.module.css";
 import {  SHORT_PAUSE } from "../../constants/pauseLimits";
-import {changeState, stringReverse} from './utils'
+import {changeState} from './utils'
 
 interface symbolProps {
   symbol: string;
@@ -18,24 +18,28 @@ export const StringComponent: React.FC = () => {
   const [charArr, setCharArr] = useState<Array<symbolProps>>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
+  // Меняем статус кружка с паузой
+
+  const changeStateRender = async (arr: Array<symbolProps>, status: string, startIndex: number, endIndex: number) => {
+    changeState(arr, status, startIndex, endIndex );
+    setCharArr([...arr])
+    await pause(SHORT_PAUSE)
+  }
+
+  // Главная функция
+  
   const stringReverse = async (arr: Array<symbolProps>) => {
     setInProgress(true);
     let end = arr.length - 1;
     for (let start = 0; start <= end; start++) {
       if (start === end) {
-        changeState(arr, "changing", start);
-        setCharArr([...arr])
-        await pause( SHORT_PAUSE )
+        await changeStateRender(arr, "changing", start, end)
         changeState(arr, "modified", start);
         setCharArr([...arr])
       }
-      changeState(arr, "changing", start, end);
-      setCharArr([...arr])
-      await pause( SHORT_PAUSE )
+      await changeStateRender(arr, "changing", start, end)
       swap(arr, start, end);
-      changeState(arr, "modified", start, end);
-      setCharArr([...arr])
-      await  pause( SHORT_PAUSE )
+      await changeStateRender(arr, "modified", start, end)
       end--;
     }
     setInProgress(false);

@@ -15,16 +15,14 @@ interface symbolProps {
   }
 
   //Изменить статус/внешний вид символов.
-  export const stringReverse = async (arr: Array<symbolProps>) => {
+  export const stringReversePro = async (arr: Array<symbolProps>, callback: Function, status: string) => {
     let step = 0
     let end = arr.length - 1;
     for (let start = 0; start <= end; start++) {
+      callback(arr, status)
       swap(arr, start, end);
       end--;
       step++
     }
-    return { 
-      resultArr: arr, 
-      countSteps: step
-    }
+    return arr
   }
