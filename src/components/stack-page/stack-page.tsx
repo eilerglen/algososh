@@ -4,6 +4,9 @@ import { Input } from "../ui/input/input";
 import { Stack } from "./utils";
 import { Circle } from "../ui/circle/circle";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { SHORT_PAUSE } from "../../constants/pauseLimits";
+import { TStatusObject } from "../../types/statusObject";
+import { pause } from "../../utils/utils";
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
@@ -26,7 +29,25 @@ export const StackPage: React.FC = () => {
     resetStack(stackValues);
   };
 
+  const handlePush = async () => {
+    setInputValue("");
+    resetInput();
+    await pause(SHORT_PAUSE);
+    stackValues[stackValues.length - 1].state = TStatusObject.Default;
+    setStackValues([...stackValues]);
+  };
+
+  const handlePop = async () => {
+    setStackValues([...stackValues]);
+    await pause(SHORT_PAUSE);
+    stackValues[stackValues.length - 1].state = TStatusObject.Changing;
+    stackValues[stackValues.length - 1].head = "top";
+    setStackValues([...stackValues]);
+  };
+  //Создаем инстанс
   const stack = new Stack(
+    handlePush,
+    handlePop,
     setInputValue,
     setStackValues,
     stackValues,
@@ -65,7 +86,8 @@ export const StackPage: React.FC = () => {
       </div>
       <div className={`${styles["flex-container"]}`}>
         <ul className={styles.list}>
-          {stackValues && stackValues.map((item, index) => (
+          {stackValues &&
+            stackValues.map((item, index) => (
               <li className={`${styles["list-elem"]}`} key={index}>
                 {index === stackValues.length - 1 && (
                   <p className={`${styles["list-el-info"]}`}>top</p>

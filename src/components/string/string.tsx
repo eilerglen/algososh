@@ -18,8 +18,6 @@ export const StringComponent: React.FC = () => {
   const [charArr, setCharArr] = useState<Array<symbolProps>>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
- 
-
   const stringReverse = async (arr: Array<symbolProps>) => {
     setInProgress(true);
     let end = arr.length - 1;
