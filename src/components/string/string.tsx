@@ -7,7 +7,7 @@ import { TStatusObject} from "../../types/statusObject";
 import { swap, pause } from "../../utils/utils";
 import styles from "./string.module.css";
 import {  SHORT_PAUSE } from "../../constants/pauseLimits";
-import {changeState} from './utils'
+import {changeState, stringReverse} from './utils'
 
 interface symbolProps {
   symbol: string;
@@ -17,6 +17,8 @@ interface symbolProps {
 export const StringComponent: React.FC = () => {
   const [charArr, setCharArr] = useState<Array<symbolProps>>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
+
+ 
 
   const stringReverse = async (arr: Array<symbolProps>) => {
     setInProgress(true);
@@ -42,7 +44,7 @@ export const StringComponent: React.FC = () => {
   }
 
   //Рендер вводимых символов.
-  const handleChange = (event: any) => {
+  const renderInputNumbers = (event: any) => {
     setCharArr(event.target.value.split('').map((symbol: any) => {
       return {
         symbol: symbol,
@@ -52,7 +54,7 @@ export const StringComponent: React.FC = () => {
   }
 
   //Запуск функции перестановки по нажатию кнопки.
-  const handleClick = async () => {
+  const handleStartAnimation = async () => {
     //Вернуть в дефолтное состояние, если строка уже отсортирована.
     if (charArr[0].state === 'modified') {
       setCharArr(charArr.map((symbol: any) => {
@@ -72,10 +74,10 @@ export const StringComponent: React.FC = () => {
           isLimitText={true}
           maxLength={11}
           // formOfWord={"символов"}
-          onChange={handleChange}
+          onChange={renderInputNumbers}
         />
 
-        <Button text={'Развернуть'} onClick={handleClick} isLoader={inProgress}></Button>
+        <Button text={'Развернуть'} onClick={handleStartAnimation} isLoader={inProgress}></Button>
 
       </div>
       <div className={`${styles['flex-container']}`}>
