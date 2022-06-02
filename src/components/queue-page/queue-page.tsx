@@ -14,12 +14,12 @@ const queue = new Queue(7);
 
 export const QueuePage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
-  const [queueValues, setQueue] = useState<Array<any>>();
+  const [queueValues, setQueueValues] = useState<Array<any>>();
   const [inProgress, setInProgress] = useState<boolean>(false);
 
   const handleEnqueue = async () => {
     setInProgress(true);
-    // await queue.enqueue(inputValue, setQueue);
+    await queue.enqueue(inputValue, setQueueValues);
     setInProgress(false);
     setInputValue("");
     resetInput();
@@ -27,12 +27,12 @@ export const QueuePage: React.FC = () => {
 
   const handleDequeue = async () => {
     setInProgress(true);
-    // await queue.dequeue(setQueue);
+    await queue.dequeue(setQueueValues);
     setInProgress(false);
   }
 
   const handleClear = () => {
-    // queue.clear(setQueue);
+    queue.clear(setQueueValues);
   }
 
   //Сборос инпута.
@@ -75,7 +75,7 @@ export const QueuePage: React.FC = () => {
             <li className={`${styles['list-elem']}`} key={ind}>
               <p className={`${styles['list-el-info']}`}>{ind === queue.getHead() ? "head" : " "}</p>
               <Circle
-                letter={elem.symbol}
+                letter={elem.char}
                 state={elem.state}
               />
               <p className={`${styles['list-el-info']}`}>{ind === queue.getTail() ? "tail" : " "}</p>
