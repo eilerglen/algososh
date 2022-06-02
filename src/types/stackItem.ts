@@ -1,6 +1,7 @@
 import { TStatusObject } from "./statusObject";
 
-export interface columnObject {
-  num: number;
+export interface StackObject {
+  char: string;
   state: TStatusObject;
+  head?: "top";
 }

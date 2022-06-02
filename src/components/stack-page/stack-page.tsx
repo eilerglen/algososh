@@ -7,6 +7,7 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { SHORT_PAUSE } from "../../constants/pauseLimits";
 import { TStatusObject } from "../../types/statusObject";
 import { pause } from "../../utils/utils";
+import {StackObject} from '../../types/stackItem'
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
@@ -14,44 +15,53 @@ export const StackPage: React.FC = () => {
   const [stackValues, setStackValues] = useState<Array<any>>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
+  let pushItem: StackObject = {
+    char: inputValue,
+    state: TStatusObject.Changing,
+    head: "top",
+  }
+
+  
+
   //Сборос инпута.
   const resetInput = () => {
     document.querySelectorAll("input")[0].value = "";
   };
 
   //Очистить все данные.
-  const resetStack = (arrValues: Array<any>) => {
+  const clear = (arrValues: Array<any>) => {
     arrValues.length = 0;
     setStackValues([...arrValues]);
   };
 
   const handleResetStack = () => {
-    resetStack(stackValues);
+    clear(stackValues);
   };
 
   const handlePush = async () => {
     setInputValue("");
     resetInput();
+    setStackValues([...stackValues]);
     await pause(SHORT_PAUSE);
     stackValues[stackValues.length - 1].state = TStatusObject.Default;
     setStackValues([...stackValues]);
   };
 
   const handlePop = async () => {
+    stackValues[stackValues.length - 1].state = TStatusObject.Changing;
     setStackValues([...stackValues]);
     await pause(SHORT_PAUSE);
-    stackValues[stackValues.length - 1].state = TStatusObject.Changing;
     stackValues[stackValues.length - 1].head = "top";
+    stackValues[stackValues.length - 1].state = TStatusObject.Default;
+    await pause(SHORT_PAUSE);
     setStackValues([...stackValues]);
+    
   };
   //Создаем инстанс
   const stack = new Stack(
     handlePush,
     handlePop,
-    setInputValue,
-    setStackValues,
     stackValues,
-    inputValue
   );
 
   return (
@@ -69,7 +79,7 @@ export const StackPage: React.FC = () => {
           text={"Добавить"}
           mixin={styles.button}
           disabled={inputValue.length === 0 || inProgress}
-          onClick={() => stack.push()}
+          onClick={() => stack.push(pushItem)}
         />
         <Button
           text={"Удалить"}
