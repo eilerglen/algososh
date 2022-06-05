@@ -33,7 +33,6 @@ export class LinkedList<T> implements ILinkedList<T> {
 
   addToTail(element: T) {
     let node = new Node(element);
-
     if (this.size === 0) {
       this.head = node;
     } else {

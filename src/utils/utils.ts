@@ -8,3 +8,5 @@ export const swap = (arr: Array<any>, left: number, right: number ) => {
 export const pause = async (ms: number) => {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+export const getNumber = () => Math.floor(Math.random() * 100) + 1;

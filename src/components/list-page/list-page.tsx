@@ -5,6 +5,12 @@ import { listItemProps } from "../../types/listItem";
 import { pause } from "../../utils/utils";
 import { LinkedList } from "./utils";
 import styles from './list-page.module.css'
+import { Button } from "../../ui/button/button";
+import { Circle } from "../ui/circle/circle";
+import { SHORT_PAUSE } from "../../constants/pauseLimits";
+import { Input } from "../ui/input/input";
+import { ILinkedList } from "./utils";
+import { getNumber } from "../../utils/utils";
 
 export const ListPage: React.FC = () => {
   const maxNum = 12;
@@ -39,7 +45,7 @@ export const ListPage: React.FC = () => {
 
   const sortAndWait = async (arr: listItemProps[]) => {
     setArrayCircles([...arr]);
-    await delay(SHORT_DELAY_IN_MS);
+    await pause(SHORT_PAUSE);
   };
 
   const addToHead = async () => {
@@ -69,11 +75,11 @@ export const ListPage: React.FC = () => {
     };
     copyArr.unshift({
       char: headValue ? headValue : "",
-      state: ElementStates.Modified,
+      state: TStatusObject.Modified,
     });
     await sortAndWait([...copyArr]);
     // Меняем стейт головы
-    copyArr[0].state = ElementStates.Default;
+    copyArr[0].state = TStatusObject.Default;
     setInProgress(false);
     setAddingToHead(false);
     setValue("");
@@ -222,11 +228,11 @@ export const ListPage: React.FC = () => {
     };
     copyArr.splice(idx!, 0, {
       char: newValue ? newValue : "",
-      state: ElementStates.Modified,
+      state: TStatusObject.Modified,
     });
     await sortAndWait([...copyArr]);
     // Убираем подсветку
-    copyArr.forEach((el) => (el.state = ElementStates.Default));
+    copyArr.forEach((el) => (el.state = TStatusObject.Default));
     setInProgress(false);
     setAddingByIdx(false);
     setValue("");
@@ -244,7 +250,7 @@ export const ListPage: React.FC = () => {
     linkedList!.print();
     // Запускаем перебор по элементам массива
     for (let i = 0; i <= idx!; i++) {
-      copyArr[i].state = ElementStates.Changing;
+      copyArr[i].state = TStatusObject.Changing;
       if (i === idx) copyArr[i].noArrow = true;
       await sortAndWait([...copyArr]);
     }
@@ -261,7 +267,7 @@ export const ListPage: React.FC = () => {
     // Удаляем элемент
     copyArr.splice(idx!, 1);
     // Убираем подсветку
-    copyArr.forEach((el) => (el.state = ElementStates.Default));
+    copyArr.forEach((el) => (el.state = TStatusObject.Default));
     setInProgress(false);
     setDeletingByIdx(false);
     setIdx(undefined);
@@ -271,7 +277,7 @@ export const ListPage: React.FC = () => {
   return (
     <SolutionLayout title="Связный список">
       <div className={styles.container}>
-        <InputContainer>
+      
           <Input
             extraClass={styles.input}
             placeholder="Введите значение"
@@ -284,7 +290,7 @@ export const ListPage: React.FC = () => {
             maxLength={4}
           />
           <Button
-            extraClass={styles.button}
+            mixin={styles.button}
             disabled={inProgress || !value || arrayOfCircles.length > maxNum}
             isLoader={addingToHead}
             text="Добавить в head"
@@ -292,7 +298,7 @@ export const ListPage: React.FC = () => {
             onClick={() => addToHead()}
           />
           <Button
-            extraClass={styles.button}
+           mixin={styles.button}
             isLoader={addingToTail}
             disabled={inProgress || !value || arrayOfCircles.length > maxNum}
             text="Добавить в tail"
@@ -300,7 +306,7 @@ export const ListPage: React.FC = () => {
             onClick={() => addToTail()}
           />
           <Button
-            extraClass={styles.button}
+            mixin={styles.button}
             disabled={inProgress || arrayOfCircles.length <= 1}
             isLoader={deletingFromHead}
             text="Удалить из head"
@@ -308,15 +314,15 @@ export const ListPage: React.FC = () => {
             onClick={() => removeFromHead()}
           />
           <Button
-            extraClass={styles.button}
+            mixin={styles.button}
             disabled={inProgress || arrayOfCircles.length <= 1}
             isLoader={deletingFromTail}
             text="Удалить из tail"
             type="button"
             onClick={() => removeFromTail()}
           />
-        </InputContainer>
-        <InputContainer>
+      
+       
           <Input
             type="text"
             extraClass={styles.input}
@@ -328,7 +334,7 @@ export const ListPage: React.FC = () => {
             }
           />
           <Button
-            extraClass={styles.bigButton}
+           mixin={styles.bigButton}
             disabled={
               !value ||
               !idx ||
@@ -342,14 +348,14 @@ export const ListPage: React.FC = () => {
             onClick={() => idx && addByIdx(idx)}
           />
           <Button
-            extraClass={styles.bigButton}
+           mixin={styles.bigButton}
             isLoader={deletingByIdx}
             disabled={!idx || inProgress || idx > arrayOfCircles.length - 1}
             text="Удалить по индексу"
             type="button"
             onClick={() => idx && removeByIdx(idx)}
           />
-        </InputContainer>
+        
       </div>
       <ul className={styles.circleList}>
         {arrayOfCircles.map((char, idx) => {
@@ -368,15 +374,15 @@ export const ListPage: React.FC = () => {
                     : ""
                 }
               />
-              {idx !== arrayOfCircles.length - 1 && (
-                <ArrowIcon
-                  fill={
-                    char.state === TStatusObject.Changing && !char.noArrow
-                      ? "#d252e1"
-                      : "#0032FF"
-                  }
-                />
-              )}
+              {/* {idx !== arrayOfCircles.length - 1 && (
+                // <ArrowIcon
+                //   fill={
+                //     char.state === TStatusObject.Changing && !char.noArrow
+                //       ? "#d252e1"
+                //       : "#0032FF"
+                //   }
+                // />
+              )} */}
               {char.adding && (
                 <Circle
                   extraClass={styles.upperCircle}

@@ -4,38 +4,33 @@ import { TStatusObject } from "../../types/statusObject";
 import { pause } from '../../utils/utils';
 
 interface IStack<T> {
-  push: (item: StackObject) => void;
+  push: (item: T) => void;
   pop: () => void;
+  getSize: () => number;
+  clear: () => void
+  peak: () => T | null
 }
 
 export class Stack<T> implements IStack<T> {
-  callbackPush: () => void;
-  callbackPop: () => void;
-  stackValues: Array<StackObject>;
-  
+  private container: T[] = []
 
-  constructor(
-    callbackPush: () => void,
-    callbackPop: () => void,
-    stackValues: any[],
-   
-  ) {
-    this.callbackPush = callbackPush;
-    this.callbackPop = callbackPop;
-    this.stackValues = stackValues;
-    
-  }
-
-  push = async (item: StackObject) => {
-    this.stackValues.push(item);
-    this.callbackPush(); // Колбэк
+  push = async (item: T) => {
+    this.container.push(item);
+    // this.callbackPush(); // Колбэк
   };
 
   pop = async () => {
-    if (this.stackValues.length > 1) {
-      this.callbackPop();// Колбэк
-      await pause(SHORT_PAUSE)
-      this.stackValues.pop();
-    }  
+    this.container.push();
   };
+
+  peak = () => {
+    let size = this.getSize()
+    if(size != 0 ) {
+      return this.container[this.getSize() - 1]
+    }
+    else return null
+  }
+
+  getSize = () => this.container.length;
+  clear = () => this.container.length = 0
 }

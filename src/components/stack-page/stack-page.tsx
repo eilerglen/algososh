@@ -7,21 +7,49 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { SHORT_PAUSE } from "../../constants/pauseLimits";
 import { TStatusObject } from "../../types/statusObject";
 import { pause } from "../../utils/utils";
-import {StackObject} from '../../types/stackItem'
+import { StackObject } from "../../types/stackItem";
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
+  const stackInctance = new Stack<string>();
   const [inputValue, setInputValue] = useState<string>("");
   const [stackValues, setStackValues] = useState<Array<any>>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
-  let pushItem: StackObject = {
-    char: inputValue,
-    state: TStatusObject.Changing,
-    head: "top",
-  }
+  //Добавить значение в стек
+  const handlePush = async () => {
+    setInputValue("");
+    resetInput();
+    stackInctance.push(inputValue);
+    setStackValues([...stackValues]);
+    const newElement = stackInctance.peak();
+    console.log(newElement);
+    stackValues.push({
+      char: newElement,
+      state: TStatusObject.Changing,
+      head: "top",
+    });
+    setStackValues([...stackValues]);
+    await pause(SHORT_PAUSE);
+    stackValues[stackValues.length - 1].state = TStatusObject.Default;
+    setStackValues([...stackValues]);
+    console.log(stackInctance.getSize())
+  };
 
-  
+  //Удалить значение из стека
+
+  const handlePop = async() => {
+    console.log(stackInctance.getSize())
+    stackValues[stackValues.length - 1].state = TStatusObject.Changing;
+    setStackValues([...stackValues]);
+    await pause(SHORT_PAUSE);
+    stackValues.pop();
+    setStackValues([...stackValues]);
+    await pause(SHORT_PAUSE);
+    stackValues[stackValues.length - 1].head = "top";
+    stackValues[stackValues.length - 1].state = TStatusObject.Default;
+    await pause(SHORT_PAUSE);
+  };
 
   //Сборос инпута.
   const resetInput = () => {
@@ -29,40 +57,9 @@ export const StackPage: React.FC = () => {
   };
 
   //Очистить все данные.
-  const clear = (arrValues: Array<any>) => {
-    arrValues.length = 0;
-    setStackValues([...arrValues]);
+  const clear = () => {
+    setStackValues([]);
   };
-
-  const handleResetStack = () => {
-    clear(stackValues);
-  };
-
-  const handlePush = async () => {
-    setInputValue("");
-    resetInput();
-    setStackValues([...stackValues]);
-    await pause(SHORT_PAUSE);
-    stackValues[stackValues.length - 1].state = TStatusObject.Default;
-    setStackValues([...stackValues]);
-  };
-
-  const handlePop = async () => {
-    stackValues[stackValues.length - 1].state = TStatusObject.Changing;
-    setStackValues([...stackValues]);
-    await pause(SHORT_PAUSE);
-    stackValues[stackValues.length - 1].head = "top";
-    stackValues[stackValues.length - 1].state = TStatusObject.Default;
-    await pause(SHORT_PAUSE);
-    setStackValues([...stackValues]);
-    
-  };
-  //Создаем инстанс
-  const stack = new Stack(
-    handlePush,
-    handlePop,
-    stackValues,
-  );
 
   return (
     <SolutionLayout title="Стек">
@@ -79,19 +76,19 @@ export const StackPage: React.FC = () => {
           text={"Добавить"}
           mixin={styles.button}
           disabled={inputValue.length === 0 || inProgress}
-          onClick={() => stack.push(pushItem)}
+          onClick={handlePush}
         />
         <Button
           text={"Удалить"}
           mixin={styles.button}
-          onClick={() => stack.pop()}
+          onClick={handlePop}
           disabled={stackValues.length === 0 || inProgress}
         />
         <Button
           text={"Очистить"}
           mixin={styles.button}
           disabled={stackValues.length === 0 || inProgress}
-          onClick={handleResetStack}
+          onClick={clear}
         />
       </div>
       <div className={`${styles["flex-container"]}`}>
