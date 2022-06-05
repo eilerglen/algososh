@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../ui/button/button";
 import { Input } from "../ui/input/input";
 import { Stack } from "./utils";
@@ -8,47 +8,61 @@ import { SHORT_PAUSE } from "../../constants/pauseLimits";
 import { TStatusObject } from "../../types/statusObject";
 import { pause } from "../../utils/utils";
 import { StackObject } from "../../types/stackItem";
+import { IStack } from "./utils";
 import styles from "./stack-page.module.css";
+import { render } from "@testing-library/react";
 
 export const StackPage: React.FC = () => {
-  const stackInctance = new Stack<string>();
+  const stackInstanse = new Stack<string>();
   const [inputValue, setInputValue] = useState<string>("");
-  const [stackValues, setStackValues] = useState<Array<any>>([]);
+  const [renderValues, setRenderValues] = useState<Array<any>>([]);
+  const [stackValues, setStackValues] = useState<IStack<string>>(stackInstanse);
   const [inProgress, setInProgress] = useState<boolean>(false);
+  useEffect(() => {
+    console.log(stackValues);
+  });
 
   //Добавить значение в стек
   const handlePush = async () => {
     setInputValue("");
     resetInput();
-    stackInctance.push(inputValue);
-    setStackValues([...stackValues]);
-    const newElement = stackInctance.peak();
+    stackValues.push(inputValue);
+    // setStackValues([...stackValues]);
+    const newElement = stackValues.peak();
     console.log(newElement);
-    stackValues.push({
+    renderValues.push({
       char: newElement,
       state: TStatusObject.Changing,
       head: "top",
     });
-    setStackValues([...stackValues]);
+    setRenderValues([...renderValues]);
     await pause(SHORT_PAUSE);
-    stackValues[stackValues.length - 1].state = TStatusObject.Default;
-    setStackValues([...stackValues]);
-    console.log(stackInctance.getSize())
+    renderValues[renderValues.length - 1].state = TStatusObject.Default;
+    setRenderValues([...renderValues]);
+    console.log(stackValues.getSize());
   };
 
   //Удалить значение из стека
 
-  const handlePop = async() => {
-    console.log(stackInctance.getSize())
-    stackValues[stackValues.length - 1].state = TStatusObject.Changing;
-    setStackValues([...stackValues]);
-    await pause(SHORT_PAUSE);
+  const handlePop = async () => {
     stackValues.pop();
-    setStackValues([...stackValues]);
-    await pause(SHORT_PAUSE);
-    stackValues[stackValues.length - 1].head = "top";
-    stackValues[stackValues.length - 1].state = TStatusObject.Default;
-    await pause(SHORT_PAUSE);
+    const size = stackValues.getSize();
+    if (size != 0) {
+      renderValues[renderValues.length - 1].state = TStatusObject.Changing;
+      setRenderValues([...renderValues]);
+      await pause(SHORT_PAUSE);
+      renderValues.pop();
+      renderValues[renderValues.length - 1].head = "top";
+      renderValues[renderValues.length - 1].state = TStatusObject.Default;
+      // await pause(SHORT_PAUSE);
+      setRenderValues([...renderValues]);
+    } else {
+      setRenderValues([]);
+
+    }
+
+
+    // setRenderValues([]);
   };
 
   //Сборос инпута.
@@ -58,7 +72,7 @@ export const StackPage: React.FC = () => {
 
   //Очистить все данные.
   const clear = () => {
-    setStackValues([]);
+    setRenderValues([]);
   };
 
   return (
@@ -82,21 +96,21 @@ export const StackPage: React.FC = () => {
           text={"Удалить"}
           mixin={styles.button}
           onClick={handlePop}
-          disabled={stackValues.length === 0 || inProgress}
+          disabled={renderValues.length === 0 || inProgress}
         />
         <Button
           text={"Очистить"}
           mixin={styles.button}
-          disabled={stackValues.length === 0 || inProgress}
+          disabled={renderValues.length === 0 || inProgress}
           onClick={clear}
         />
       </div>
       <div className={`${styles["flex-container"]}`}>
         <ul className={styles.list}>
-          {stackValues &&
-            stackValues.map((item, index) => (
+          {renderValues &&
+            renderValues.map((item, index) => (
               <li className={`${styles["list-elem"]}`} key={index}>
-                {index === stackValues.length - 1 && (
+                {index === renderValues.length - 1 && (
                   <p className={`${styles["list-el-info"]}`}>top</p>
                 )}
                 <Circle letter={item.char} state={item.state} />

@@ -3,7 +3,7 @@ import {StackObject} from '../../types/stackItem'
 import { TStatusObject } from "../../types/statusObject";
 import { pause } from '../../utils/utils';
 
-interface IStack<T> {
+export interface IStack<T> {
   push: (item: T) => void;
   pop: () => void;
   getSize: () => number;
@@ -12,7 +12,7 @@ interface IStack<T> {
 }
 
 export class Stack<T> implements IStack<T> {
-  private container: T[] = []
+  container: T[] = []
 
   push = async (item: T) => {
     this.container.push(item);
