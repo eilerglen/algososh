@@ -45,15 +45,17 @@ export const StackPage: React.FC = () => {
   //Удалить значение из стека
 
   const handlePop = async () => {
-    stackValues.pop();
+    stackValues!.pop();
     const size = stackValues.getSize();
-    if (size != 0) {
+    if (size !== 0) {
+     
       renderValues[renderValues.length - 1].state = TStatusObject.Changing;
-      setRenderValues([...renderValues]);
-      await pause(SHORT_PAUSE);
-      renderValues.pop();
       renderValues[renderValues.length - 1].head = "top";
-      renderValues[renderValues.length - 1].state = TStatusObject.Default;
+      setRenderValues([...renderValues]);
+      renderValues.pop();
+      await pause(SHORT_PAUSE);
+     
+      // renderValues[renderValues.length - 1].state = TStatusObject.Default;
       // await pause(SHORT_PAUSE);
       setRenderValues([...renderValues]);
     } else {
