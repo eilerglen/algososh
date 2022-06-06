@@ -10,7 +10,6 @@ import { pause } from "../../utils/utils";
 import { StackObject } from "../../types/stackItem";
 import { IStack } from "./utils";
 import styles from "./stack-page.module.css";
-import { render } from "@testing-library/react";
 
 export const StackPage: React.FC = () => {
   const stackInstanse = new Stack<string>();

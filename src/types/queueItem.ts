@@ -1,6 +1,8 @@
 import { TStatusObject } from "./statusObject";
 
 export interface QueueObject {
-  char: string;
+  char?: string | null;
   state: TStatusObject;
+  tail?: string;
+  head?: string;
 }
