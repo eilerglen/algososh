@@ -31,53 +31,60 @@ export const QueuePage: React.FC = () => {
   const [inProgress, setInProgress] = useState<boolean>(false);
 
   //Добавить в очередь
- const copyArr = [...renderValues];
- 
+ const tempArr= [...renderValues];
+  console.log(tempArr)
   const handleEnqueue = async () => {
     queue.enqueue(inputValue);
-    const currentHead = queue.getHeadValue()
-    const currentTail = queue.getTailValue()
-    copyArr[currentHead.index].char = currentHead.value!
-    copyArr[currentHead.index].head = "head"
-    if(currentTail.index > 0) {
-      copyArr[currentTail.index - 1].tail = ""
+    //Получаем индексы
+    const currentHead = queue.getHead()
+    const currentTail = queue.getTail()
+    console.log(currentHead)
+    //Получаем значения по индексам
+    const valueHead = queue.getValue(currentHead)
+    const valueTail = queue.getValue(currentTail)
+    //Заполняем массив объектами из очереди
+    tempArr[currentHead].char = valueHead
+    tempArr[currentHead].head = "head"
+    if(currentTail > 0) {
+      tempArr[currentTail - 1].tail = ""
     }
-    copyArr[currentTail.index].char =currentTail.value;
-    copyArr[currentTail.index].state = TStatusObject.Changing;
-    setRenderValues([...copyArr]);
+    tempArr[currentTail].char = valueTail
+    tempArr[currentTail].state = TStatusObject.Changing;
+    setRenderValues([... tempArr]);
     await pause(SHORT_PAUSE);
-    copyArr[currentTail.index].tail = "tail";
-    copyArr[currentTail.index].state = TStatusObject.Default;
-    setRenderValues([...copyArr]);
+    tempArr[currentTail].tail = "tail";
+    tempArr[currentTail].state = TStatusObject.Default;
+    setRenderValues([...tempArr]);
     await pause(SHORT_PAUSE);
 
   };
 
  //Удалить из очереди
  const handleDequeue = async () => {
-  const currentHead = queue.getHeadValue();
-  const currentTail = queue.getTailValue();
-  if (currentHead.index === currentTail.index) {
+  const currentHead = queue.getHead()
+  const currentTail = queue.getTail()
+
+  if (currentHead === currentTail) {
     handleClear();
   }
   queue.dequeue();
-  const newHead = queue.getHeadValue();
-  const newTail = queue.getTailValue();
-  if (newHead.index > 0) {
-    copyArr[newHead.index-1].head = "";
-    copyArr[newHead.index-1].char = "";
-    copyArr[newHead.index-1].state = TStatusObject.Changing;
-    setRenderValues([...copyArr]);
+  const newHead = queue.getHead()
+  const newTail = queue.getTail()
+  if (newHead > 0) {
+    tempArr[newHead-1].head = "";
+    tempArr[newHead-1].char = "";
+    tempArr[newHead-1].state = TStatusObject.Changing;
+    setRenderValues([...tempArr]);
     await pause(SHORT_PAUSE);
-    copyArr[newHead.index-1].state = TStatusObject.Default;
+    tempArr[newHead-1].state = TStatusObject.Default;
 
   }
-  copyArr[newHead.index].head = "head";
+  tempArr[newHead].head = "head";
   // copyArr[newHead.index].state = TStatusObject.Changing;
-  setRenderValues([...copyArr]);
+  setRenderValues([...tempArr]);
   await pause(SHORT_PAUSE);
-  copyArr[newHead.index].state = TStatusObject.Default;
-  setRenderValues([...copyArr]);
+  tempArr[newHead].state = TStatusObject.Default;
+  setRenderValues([...tempArr]);
   await pause(SHORT_PAUSE);
 };
 
@@ -88,10 +95,6 @@ export const QueuePage: React.FC = () => {
     setRenderValues([...renderDefault]);
   };
 
-  //Сборос инпута.
-  const resetInput = () => {
-    document.querySelectorAll("input")[0].value = "";
-  };
 
   return (
     <SolutionLayout title="Очередь">
