@@ -32,10 +32,10 @@ export const QueuePage: React.FC = () => {
 
   //Добавить в очередь
  const tempArr= [...renderValues];
-  console.log(tempArr)
+  
   const handleEnqueue = async () => {
     queue.enqueue(inputValue);
-    console.log(queue)
+    
     //Получаем индексы
     const currentHead = queue.getHead()
     const currentTail = queue.getTail()
@@ -48,13 +48,14 @@ export const QueuePage: React.FC = () => {
     tempArr[currentHead].head = "head"
     if(currentTail > 0) {
       tempArr[currentTail - 1].tail = ""
+      tempArr[currentTail].char = valueTail
+      
     }
     tempArr[currentTail].char = valueTail
     tempArr[currentTail].state = TStatusObject.Changing;
     setRenderValues([... tempArr]);
     await pause(SHORT_PAUSE);
     tempArr[currentTail].tail = "tail";
-    console.log(currentHead)
     tempArr[currentTail].state = TStatusObject.Default;
     setRenderValues([...tempArr]); 
     await pause(SHORT_PAUSE);
@@ -71,7 +72,6 @@ export const QueuePage: React.FC = () => {
   }
   queue.dequeue();
   const newHead = queue.getHead()
-  const newTail = queue.getTail()
   if (newHead > 0) {
     tempArr[newHead-1].head = "";
     tempArr[newHead-1].char = "";
@@ -81,8 +81,8 @@ export const QueuePage: React.FC = () => {
     tempArr[newHead-1].state = TStatusObject.Default;
 
   }
+  
   tempArr[newHead].head = "head";
-  // copyArr[newHead.index].state = TStatusObject.Changing;
   setRenderValues([...tempArr]);
   await pause(SHORT_PAUSE);
   tempArr[newHead].state = TStatusObject.Default;

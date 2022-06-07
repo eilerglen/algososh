@@ -49,7 +49,7 @@ export class Queue<T> implements IQueue<T> {
       if (this.isEmpty()) {
       throw new Error("No elements in the queue");
     }
-    return this.head 
+    return this.head
   }
 
   getTail = () => {
