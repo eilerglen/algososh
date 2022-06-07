@@ -33,8 +33,10 @@ export class Queue<T> implements IQueue<T>{
     if (this.length >= this.size) {
       throw new Error("Maximum length exceeded");
     }
-    
-    this.container[this.tail] = value;
+    if(this.isEmpty()) {
+      this.container[this.head] = value
+    }
+    this.container.push(value)
     this.tail++;
     this.length++;
   
@@ -91,8 +93,5 @@ export class Queue<T> implements IQueue<T>{
  
   getSize = () => this.size;
 
-  private setHead = (ind: number) => {
-    this.head = ind;
-  }
-
+  
 }

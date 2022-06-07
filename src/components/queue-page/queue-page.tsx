@@ -23,10 +23,8 @@ export const QueuePage: React.FC = () => {
   }));
 
   const [inputValue, setInputValue] = useState<string>("");
-  const [renderValues, setRenderValues] =
-    useState<QueueObject[]>(renderDefault);
+  const [renderValues, setRenderValues] = useState<QueueObject[]>(renderDefault);
   const [queue, setQueue] = useState<IQueue<string>>(queueInstanse); //стейт инстанса класса
-  const [headIdx, setHeadIdx] = useState<number | null>(null);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
   //Добавить в очередь
@@ -34,23 +32,21 @@ export const QueuePage: React.FC = () => {
 
   const handleEnqueue = async () => {
     queue.enqueue(inputValue);
-   
     const currentHead = queue.getHeadValue();
-    
     const currentTail = queue.getTailValue();
-    console.log(currentTail)
     copyArr[currentHead.index].char = currentHead.value!;
     copyArr[currentHead.index].head = "head";
-    setHeadIdx(currentHead.index);
     if (currentTail.index > 0) {
       copyArr[currentTail.index - 1].tail = "";
     }
     copyArr[currentTail.index].char = inputValue;
-    copyArr[currentTail.index].tail = "tail";
     copyArr[currentTail.index].state = TStatusObject.Changing;
     setRenderValues([...copyArr]);
     await pause(SHORT_PAUSE);
+    copyArr[currentTail.index].tail = "tail";
     copyArr[currentTail.index].state = TStatusObject.Default;
+    setRenderValues([...copyArr]);
+    await pause(SHORT_PAUSE);
   };
 
   //Удалить из очереди
@@ -66,12 +62,19 @@ export const QueuePage: React.FC = () => {
     if (newHead.index > 0) {
       copyArr[newHead.index-1].head = "";
       copyArr[newHead.index-1].char = "";
+      copyArr[newHead.index-1].state = TStatusObject.Changing;
+      setRenderValues([...copyArr]);
+      await pause(SHORT_PAUSE);
+      copyArr[newHead.index-1].state = TStatusObject.Default;
+
     }
     copyArr[newHead.index].head = "head";
-    copyArr[newHead.index].state = TStatusObject.Changing;
+    // copyArr[newHead.index].state = TStatusObject.Changing;
     setRenderValues([...copyArr]);
     await pause(SHORT_PAUSE);
     copyArr[newHead.index].state = TStatusObject.Default;
+    setRenderValues([...copyArr]);
+    await pause(SHORT_PAUSE);
   };
 
   //Очистить очередь
