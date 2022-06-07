@@ -35,6 +35,7 @@ export const QueuePage: React.FC = () => {
   console.log(tempArr)
   const handleEnqueue = async () => {
     queue.enqueue(inputValue);
+    console.log(queue)
     //Получаем индексы
     const currentHead = queue.getHead()
     const currentTail = queue.getTail()
@@ -53,8 +54,9 @@ export const QueuePage: React.FC = () => {
     setRenderValues([... tempArr]);
     await pause(SHORT_PAUSE);
     tempArr[currentTail].tail = "tail";
+    console.log(currentHead)
     tempArr[currentTail].state = TStatusObject.Default;
-    setRenderValues([...tempArr]);
+    setRenderValues([...tempArr]); 
     await pause(SHORT_PAUSE);
 
   };

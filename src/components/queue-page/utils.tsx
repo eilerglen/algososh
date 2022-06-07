@@ -14,7 +14,7 @@ export interface IQueue<T> {
   getValue: (ind: number) => any
 }
 
-export class Queue<T> implements IQueue<T>{
+export class Queue<T> implements IQueue<T> {
  private container: ( T | null)[]=[]
   head: number = 0
   tail: number = 0
@@ -23,7 +23,6 @@ export class Queue<T> implements IQueue<T>{
 
   constructor(size: number) {
     this.size = size
-    this.container = Array(size)
   }
   
   enqueue(value: T) {
@@ -31,8 +30,8 @@ export class Queue<T> implements IQueue<T>{
     if (this.length >= this.size) {
       throw new Error("Maximum length exceeded");
     }
-    this.container[this.tail] = value
-    // this.container.push()
+    // this.container[this.tail] = value
+    this.container.push(value)
     this.tail++;
     this.length++;
   
