@@ -64,28 +64,28 @@ export const QueuePage: React.FC = () => {
 
  //Удалить из очереди
  const handleDequeue = async () => {
-  const currentHead = queue.getHead()
+  const prevHead = queue.getHead()
   const currentTail = queue.getTail()
 
-  if (currentHead === currentTail) {
+  if (prevHead === currentTail) {
     handleClear();
   }
   queue.dequeue();
-  const newHead = queue.getHead()
-  if (newHead > 0) {
-    tempArr[newHead-1].head = "";
-    tempArr[newHead-1].char = "";
-    tempArr[newHead-1].state = TStatusObject.Changing;
+  const currentHead = queue.getHead()
+  if (currentHead > 0) {
+    tempArr[prevHead].head = "";
+    tempArr[prevHead].char = "";
+    tempArr[prevHead].state = TStatusObject.Changing;
     setRenderValues([...tempArr]);
     await pause(SHORT_PAUSE);
-    tempArr[newHead-1].state = TStatusObject.Default;
+    tempArr[prevHead].state = TStatusObject.Default;
 
   }
   
-  tempArr[newHead].head = "head";
+  tempArr[currentHead].head = "head";
   setRenderValues([...tempArr]);
   await pause(SHORT_PAUSE);
-  tempArr[newHead].state = TStatusObject.Default;
+  tempArr[currentHead].state = TStatusObject.Default;
   setRenderValues([...tempArr]);
   await pause(SHORT_PAUSE);
 };
@@ -134,18 +134,12 @@ export const QueuePage: React.FC = () => {
           {renderValues &&
             renderValues.map((elem: any, ind: number) => (
               <li className={`${styles["list-elem"]}`} key={ind}>
-                {/* <p className={`${styles["list-el-info"]}`}>
-                  {ind === queue.getHead() ? "head" : " "}
-                </p> */}
                 <Circle
                   letter={elem.char}
                   state={elem.state}
                   head={elem.head}
                   tail={elem.tail}
                 />
-                {/* <p className={`${styles["list-el-info"]}`}>
-                  {ind === queue.getTail() ? "tail" : " "}
-                </p> */}
               </li>
             ))}
         </ul>

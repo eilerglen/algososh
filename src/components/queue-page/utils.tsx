@@ -1,8 +1,3 @@
-import { QueueObject } from "../../types/queueItem";
-import { SHORT_PAUSE } from "../../constants/pauseLimits";
-import { TStatusObject } from "../../types/statusObject";
-import { pause } from "../../utils/utils";
-import { threadId } from "worker_threads";
 
 export const MAX_SIZE = 7
 
