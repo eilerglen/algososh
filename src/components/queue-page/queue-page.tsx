@@ -13,12 +13,11 @@ import { QueueObject } from "../../types/queueItem";
 import { MAX_SIZE } from "./utils";
 
 export const QueuePage: React.FC = () => {
-
   //Создаем инстанс класса
   const queueInstanse = new Queue<string>(MAX_SIZE);
 
   //Создаем стартовый рендер
-  const renderDefault: any[] =  Array.from({ length: MAX_SIZE }, () => ({
+  const renderDefault: any[] = Array.from({ length: MAX_SIZE }, () => ({
     char: "",
     state: TStatusObject.Default,
   }));
@@ -31,33 +30,48 @@ export const QueuePage: React.FC = () => {
   const [inProgress, setInProgress] = useState<boolean>(false);
 
   //Добавить в очередь
+  const copyArr = [...renderValues];
 
   const handleEnqueue = async () => {
-    const copyArr = [...renderValues];
     queue.enqueue(inputValue);
-    const currentHead = queue.getHeadValue()
-    const currentTail = queue.getTailValue()
-    console.log(currentHead.index)
-    copyArr[currentHead.index].char = currentHead.value!
-    copyArr[currentHead.index].head = "head"
-    setHeadIdx(currentHead.index)
-    if(currentTail.index > 0) {
-      copyArr[currentTail.index - 1].tail = ""
+   
+    const currentHead = queue.getHeadValue();
+    
+    const currentTail = queue.getTailValue();
+    console.log(currentTail)
+    copyArr[currentHead.index].char = currentHead.value!;
+    copyArr[currentHead.index].head = "head";
+    setHeadIdx(currentHead.index);
+    if (currentTail.index > 0) {
+      copyArr[currentTail.index - 1].tail = "";
     }
-    copyArr[currentTail.index].char = inputValue
+    copyArr[currentTail.index].char = inputValue;
     copyArr[currentTail.index].tail = "tail";
     copyArr[currentTail.index].state = TStatusObject.Changing;
-    setRenderValues([...copyArr])
-    await pause(SHORT_PAUSE)
+    setRenderValues([...copyArr]);
+    await pause(SHORT_PAUSE);
     copyArr[currentTail.index].state = TStatusObject.Default;
-
   };
 
   //Удалить из очереди
   const handleDequeue = async () => {
-    // setInProgress(true);
-    queueInstanse.dequeue();
-    // setInProgress(false);
+    const currentHead = queue.getHeadValue();
+    const currentTail = queue.getTailValue();
+    if (currentHead.index === currentTail.index) {
+      handleClear();
+    }
+    queue.dequeue();
+    const newHead = queue.getHeadValue();
+    const newTail = queue.getTailValue();
+    if (newHead.index > 0) {
+      copyArr[newHead.index-1].head = "";
+      copyArr[newHead.index-1].char = "";
+    }
+    copyArr[newHead.index].head = "head";
+    copyArr[newHead.index].state = TStatusObject.Changing;
+    setRenderValues([...copyArr]);
+    await pause(SHORT_PAUSE);
+    copyArr[newHead.index].state = TStatusObject.Default;
   };
 
   //Очистить очередь

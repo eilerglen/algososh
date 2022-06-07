@@ -13,6 +13,7 @@ export interface IQueue<T> {
   getTail: () => number
   getHeadValue: () => { value: T | null; index: number } ;
   getTailValue: () => { value: T | null; index: number } ;
+  getSize : () => number
 }
 
 export class Queue<T> implements IQueue<T>{
@@ -32,6 +33,7 @@ export class Queue<T> implements IQueue<T>{
     if (this.length >= this.size) {
       throw new Error("Maximum length exceeded");
     }
+    
     this.container[this.tail] = value;
     this.tail++;
     this.length++;
@@ -41,7 +43,7 @@ export class Queue<T> implements IQueue<T>{
     if(this.isEmpty()) {
       throw new Error("No elements in the queue");
     }
-    this.container[this.head] = null
+    this.container.shift()
     this.head++;
     this.length--;
   }
@@ -71,17 +73,22 @@ export class Queue<T> implements IQueue<T>{
     if (this.isEmpty()) {
       throw new Error("No elements in the queue");
     }
-    return { value: this.container[this.tail-1], index: this.tail-1 };
+    return { value: this.container[this.tail-1], index: this.tail-1};
   };
 
 
   isEmpty = () => this.length === 0;
 
+  // Получить значение по индексу
   
-  isEmptyElem = (ind: number) => {
-    return !this.container[ind];
+  getValue = (ind: number) => {
+    if (this.isEmpty()) {
+      throw new Error("No elements in the queue");
+    }
+    return this.container[ind]
   }
 
+ 
   getSize = () => this.size;
 
   private setHead = (ind: number) => {
