@@ -1,7 +1,6 @@
-
-import { SHORT_PAUSE } from "../../constants/pauseLimits";
-import { TStatusObject } from "../../types/statusObject"; 
-import { listItemProps } from "../../types/listItem";
+import { reverse } from "dns/promises";
+import { findConfigFile } from "typescript";
+import { TStatusObject } from "../../types/statusObject";
 import { pause } from "../../utils/utils";
 
 export class Node<T> {
@@ -14,69 +13,137 @@ export class Node<T> {
 }
 
 export interface ILinkedList<T> {
-  addToTail: (element: T) => void;
-  getNodeByIndex: (index: number) => T | null;
-  insertAt: (element: T, index: number) => void;
+  addToHead: (value: T) => void;
+  addToTail: (value: T) => void;
+  deleteHead: () => void
+  deleteTail: () => void
+  getNodeToIndex: (index: number) => T | null;
+  insertFromPosition: (value: T, index: number) => void;
+  removeFromPosition: (index: number) => T | null;
   getSize: () => number;
   print: () => void;
-  removeFromPosition: (index: number) => T | null;
 }
 
 export class LinkedList<T> implements ILinkedList<T> {
-  private head: Node<T> | null;
-  private size: number;
-  constructor(initialState?: T[]) {
+  head: Node<T> | null = null;
+  tail: Node<T> | null = null;
+  size: number;
+
+  constructor(initArr: T[]) {
     this.head = null;
+    this.tail = null;
     this.size = 0;
-    initialState?.forEach(el => this.insertAt(el, 0))
+    initArr?.forEach(item => this.insertFromPosition(item, 0))
   }
-
-  addToTail(element: T) {
-    let node = new Node(element);
-    if (this.size === 0) {
+ // Добавить в начало
+  addToHead = (value: T) => {
+    let node = new Node<T>(value);
+    if (!this.head || !this.tail) {
       this.head = node;
-    } else {
-      let current = this.head;
+      this.tail = node;
+      return this;
+    }
+    node.next = this.head;
+    this.head = node;
+    this.size++;
+    return this;
+  };
 
-      while (current && current.next !== null) {
-        current = current.next;
-      }
+  // Добавить в конец
+  addToTail = (value: T) => {
+    let node = new Node<T>(value);
+    if (!this.head || !this.tail) {
+      this.head = node;
+      this.tail = node;
+      return this;
+    }
+    this.tail.next = node;
+    this.tail = node;
+    this.size++;
+    return this;
+  };
 
-      if (current) current.next = new Node(element);
+  deleteHead() {
+    // Если нет head значит список пуст.
+    if (!this.head) {
+      return null;
     }
 
-    this.size++;
+    const deletedHead = this.head;
+
+    // Если у head есть ссылка на следующий "next" узел
+    // то делаем его новым head.
+    if (this.head.next) {
+      this.head = this.head.next;
+    } else {
+      // Если у head нет ссылки на следующий "next" узел
+      // то мы удаляем последний узел.
+      this.head = null;
+      this.tail = null;
+    }
+    this.size--;
+    return deletedHead;
   }
 
-  insertAt(element: T, index: number) {
+  deleteTail() {
+    // Если нет tail, значит список пуст.
+
+    if (!this.tail) {
+      return null;
+    }
+
+    // Сохраняем значение последнего узла.
+    const deletedTail = this.tail;
+
+    // Если head и tail равны, значит в списке только один узел.
+    if (this.head === this.tail) {
+      this.head = null;
+      this.tail = null;
+
+      return deletedTail;
+    }
+
+    // Если в связном списке много узлов.
+    // Перебираем все узлы и находим предпоследний узел,
+    // убираем ссылку «next» на последний узел.
+    let currentNode = this.head;
+    while (currentNode) {
+      //Если элемент ссылается на tail, то делаем его tail и его next обнуляем.
+      if (currentNode.next === this.tail) {
+        this.tail = currentNode;
+        currentNode.next = null;
+        this.size--;
+        return this;
+      }
+      //Перебираем элементы в цикле while выше.
+      currentNode = currentNode.next;
+      // В данном случае currentNode - это предпоследний узел или head,
+      // который становится последним узлом.
+      this.tail = currentNode;
+
+      return deletedTail;
+    }
+  }
+
+  //Вставка по индексу
+  insertFromPosition(value: T, index: number) {
     if (index < 0 || index > this.size) {
-      console.log("Enter a valid index");
       return;
     } else {
-      const node = new Node(element);
-
-      // добавить элемент в начало списка
+      let node = new Node<T>(value);
       if (index === 0) {
         node.next = this.head;
         this.head = node;
       } else {
-        let curr = this.head;
-        let currIndex = 0;
+        let current = this.head;
+        let currentIndex = 0;
         let prev = null;
-
-        // перебрать элементы в списке до нужной позиции
-        while (currIndex < index && curr) {
-          prev = curr;
-          curr = curr.next;
-          currIndex++;
+        while (currentIndex < index && current) {
+          prev = current;
+          current = current.next;
+          currentIndex++;
         }
-
-        // добавить элемент
-        if (prev) prev.next = node;
-        node.next = curr;
       }
-
-      this.size++;
     }
   }
 
@@ -84,22 +151,7 @@ export class LinkedList<T> implements ILinkedList<T> {
     return this.size;
   }
 
-  getNodeByIndex(index: number) {
-    if (index < 0 || index > this.size) {
-      return null;
-    }
-
-    let curr = this.head;
-    let currIndex = 0;
-
-    while (currIndex < index && curr) {
-      curr = curr.next;
-      currIndex++;
-    }
-
-    return curr ? curr.value : null;
-  }
-
+  //Удаление по индексу
   removeFromPosition(index: number) {
     if (index < 0 || index > this.size) {
       return null;
@@ -126,6 +178,18 @@ export class LinkedList<T> implements ILinkedList<T> {
     return curr ? curr.value : null;
   }
 
+  //Получить элемент по индексу
+  getNodeToIndex(index: number) {
+    let current = this.head
+    let currentIndex = 0
+
+    while(currentIndex < index && current) {
+      current = current.next
+      currentIndex++
+    }
+    return current ? current.value : null
+  }
+
   print() {
     let curr = this.head;
     let res = "";
@@ -135,4 +199,5 @@ export class LinkedList<T> implements ILinkedList<T> {
     }
     console.log(res);
   }
+
 }

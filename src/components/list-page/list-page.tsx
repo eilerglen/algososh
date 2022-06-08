@@ -3,13 +3,12 @@ import { useEffect, useState } from "react";
 import { TStatusObject } from "../../types/statusObject";
 import { listItemProps } from "../../types/listItem";
 import { pause } from "../../utils/utils";
-import { LinkedList } from "./utils";
-import styles from './list-page.module.css'
+import { LinkedList, ILinkedList } from "./utils";
+import styles from "./list-page.module.css";
 import { Button } from "../../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { SHORT_PAUSE } from "../../constants/pauseLimits";
 import { Input } from "../ui/input/input";
-import { ILinkedList } from "./utils";
 import { getNumber } from "../../utils/utils";
 
 export const ListPage: React.FC = () => {
@@ -35,13 +34,7 @@ export const ListPage: React.FC = () => {
   const [idx, setIdx] = useState<number>();
   const [arrayOfCircles, setArrayCircles] = useState<listItemProps[]>([]);
   const [linkedList, setLinkedList] = useState<ILinkedList<string>>();
-  const [addingToHead, setAddingToHead] = useState(false);
-  const [addingToTail, setAddingToTail] = useState(false);
-  const [deletingFromHead, setDeletingFromHead] = useState(false);
-  const [deletingFromTail, setDeletingFromTail] = useState(false);
-  const [addingByIdx, setAddingByIdx] = useState(false);
-  const [deletingByIdx, setDeletingByIdx] = useState(false);
-  const [inProgress, setInProgress] = useState(false);
+
 
   const sortAndWait = async (arr: listItemProps[]) => {
     setArrayCircles([...arr]);
@@ -50,13 +43,11 @@ export const ListPage: React.FC = () => {
 
   const addToHead = async () => {
     const copyArr = [...arrayOfCircles];
-    setInProgress(true);
-    setAddingToHead(true);
     linkedList!.print();
     // Добавляем новую голову в наш список
-    linkedList!.insertAt(value, 0);
+    linkedList!.insertFromPosition(value, 0);
     // Сразу извлекаем для рендера из списка новый элемент
-    const headValue = linkedList!.getNodeByIndex(0);
+    const headValue = linkedList!.getNodeToIndex(0);
     linkedList!.print();
     // Подсвечиваем голову
     copyArr[0] = {
@@ -80,22 +71,18 @@ export const ListPage: React.FC = () => {
     await sortAndWait([...copyArr]);
     // Меняем стейт головы
     copyArr[0].state = TStatusObject.Default;
-    setInProgress(false);
-    setAddingToHead(false);
     setValue("");
   };
 
   const addToTail = async () => {
     const copyArr = [...arrayOfCircles];
-    setInProgress(true);
-    setAddingToTail(true);
     linkedList!.print();
     // Добавляем элемент в хвост
     linkedList!.addToTail(value);
     // Получаем размер списка (он же индекс хвоста)
     const tailIdx = linkedList!.getSize() - 1;
     // Сразу извлекаем из хвоста списка новый элемент
-    const TailValue = linkedList!.getNodeByIndex(tailIdx);
+    const TailValue = linkedList!.getNodeToIndex(tailIdx);
     linkedList!.print();
     // Запускаем цикл
     for (let i = 0; i <= tailIdx; i++) {
@@ -128,15 +115,11 @@ export const ListPage: React.FC = () => {
     // Меняем стейт хвоста
     copyArr.forEach((el) => (el.state = TStatusObject.Default));
     await sortAndWait([...copyArr]);
-    setInProgress(false);
-    setAddingToTail(false);
     setValue("");
   };
 
   const removeFromHead = async () => {
     const copyArr = [...arrayOfCircles];
-    setInProgress(true);
-    setDeletingFromHead(true);
     linkedList!.print();
     // Удаляем элемент из списка и сразу берём его значение
     const deletedElement = linkedList!.removeFromPosition(0);
@@ -157,14 +140,10 @@ export const ListPage: React.FC = () => {
     await sortAndWait([...copyArr]);
     // Убираем подсветку с новой головы
     copyArr[0].state = TStatusObject.Default;
-    setInProgress(false);
-    setDeletingFromHead(false);
   };
 
   const removeFromTail = async () => {
     const copyArr = [...arrayOfCircles];
-    setInProgress(true);
-    setDeletingFromTail(true);
     const { length } = copyArr;
     linkedList!.print();
     // Получаем индекс хвоста
@@ -188,19 +167,15 @@ export const ListPage: React.FC = () => {
     await sortAndWait([...copyArr]);
     // Убираем подсветку с нового хвоста
     copyArr[length - 2].state = TStatusObject.Default;
-    setInProgress(false);
-    setDeletingFromTail(false);
   };
 
   const addByIdx = async (idx: number) => {
     const copyArr = [...arrayOfCircles];
-    setInProgress(true);
-    setAddingByIdx(true);
     linkedList!.print();
     // Добавляем новую элемент в наш список
-    linkedList!.insertAt(value, idx);
+    linkedList!.insertFromPosition(value, idx);
     // Сразу извлекаем для рендера из списка новый элемент
-    const newValue = linkedList!.getNodeByIndex(idx);
+    const newValue = linkedList!.getNodeToIndex(idx);
     linkedList!.print();
     // Запускаем перебор по элементам массива
     for (let i = 0; i <= idx!; i++) {
@@ -233,8 +208,6 @@ export const ListPage: React.FC = () => {
     await sortAndWait([...copyArr]);
     // Убираем подсветку
     copyArr.forEach((el) => (el.state = TStatusObject.Default));
-    setInProgress(false);
-    setAddingByIdx(false);
     setValue("");
     setIdx(undefined);
   };
@@ -242,8 +215,6 @@ export const ListPage: React.FC = () => {
   const removeByIdx = async (idx: number) => {
     const copyArr = [...arrayOfCircles];
     const deletingValue = copyArr[idx!].char;
-    setInProgress(true);
-    setDeletingByIdx(true);
     linkedList!.print();
     // Удаляем элемент из списка
     const deletedElement = linkedList!.removeFromPosition(idx);
@@ -268,8 +239,6 @@ export const ListPage: React.FC = () => {
     copyArr.splice(idx!, 1);
     // Убираем подсветку
     copyArr.forEach((el) => (el.state = TStatusObject.Default));
-    setInProgress(false);
-    setDeletingByIdx(false);
     setIdx(undefined);
     await sortAndWait([...copyArr]);
   };
@@ -277,8 +246,8 @@ export const ListPage: React.FC = () => {
   return (
     <SolutionLayout title="Связный список">
       <div className={styles.container}>
-      
-          <Input
+      <div className={styles.containerInput}>
+      <Input
             extraClass={styles.input}
             placeholder="Введите значение"
             min={1}
@@ -290,39 +259,41 @@ export const ListPage: React.FC = () => {
             maxLength={4}
           />
           <Button
-            mixin={styles.button}
-            disabled={inProgress || !value || arrayOfCircles.length > maxNum}
-            isLoader={addingToHead}
+           mixin={styles.button}
+            disabled={ !value || arrayOfCircles.length > maxNum}
+            // isLoader={addingToHead}
             text="Добавить в head"
             type="button"
             onClick={() => addToHead()}
           />
           <Button
-           mixin={styles.button}
-            isLoader={addingToTail}
-            disabled={inProgress || !value || arrayOfCircles.length > maxNum}
+            mixin={styles.button}
+            // isLoader={addingToTail}
+            disabled={!value || arrayOfCircles.length > maxNum}
             text="Добавить в tail"
             type="button"
             onClick={() => addToTail()}
           />
           <Button
             mixin={styles.button}
-            disabled={inProgress || arrayOfCircles.length <= 1}
-            isLoader={deletingFromHead}
+            disabled={arrayOfCircles.length <= 1}
+            // isLoader={deletingFromHead}
             text="Удалить из head"
             type="button"
             onClick={() => removeFromHead()}
           />
           <Button
             mixin={styles.button}
-            disabled={inProgress || arrayOfCircles.length <= 1}
-            isLoader={deletingFromTail}
+            disabled={ arrayOfCircles.length <= 1}
+            // isLoader={deletingFromTail}
             text="Удалить из tail"
             type="button"
             onClick={() => removeFromTail()}
           />
-      
-       
+
+        </div>;
+
+        <div className={styles.containerInput}>
           <Input
             type="text"
             extraClass={styles.input}
@@ -334,28 +305,28 @@ export const ListPage: React.FC = () => {
             }
           />
           <Button
-           mixin={styles.bigButton}
+            mixin={styles.bigButton}
             disabled={
               !value ||
               !idx ||
-              inProgress ||
+              // inProgress ||
               idx > arrayOfCircles.length - 1 ||
               arrayOfCircles.length > maxNum
             }
-            isLoader={addingByIdx}
+            // isLoader={addingByIdx}
             text="Добавить по индексу"
             type="button"
             onClick={() => idx && addByIdx(idx)}
           />
           <Button
-           mixin={styles.bigButton}
-            isLoader={deletingByIdx}
-            disabled={!idx || inProgress || idx > arrayOfCircles.length - 1}
+            mixin={styles.bigButton}
+            // isLoader={deletingByIdx}
+            disabled={!idx  || idx > arrayOfCircles.length - 1}
             text="Удалить по индексу"
             type="button"
             onClick={() => idx && removeByIdx(idx)}
           />
-        
+         </div>;
       </div>
       <ul className={styles.circleList}>
         {arrayOfCircles.map((char, idx) => {
@@ -375,13 +346,13 @@ export const ListPage: React.FC = () => {
                 }
               />
               {/* {idx !== arrayOfCircles.length - 1 && (
-                // <ArrowIcon
-                //   fill={
-                //     char.state === TStatusObject.Changing && !char.noArrow
-                //       ? "#d252e1"
-                //       : "#0032FF"
-                //   }
-                // />
+                <ArrowIcon
+                  fill={
+                    char.state === TStatusObject.Changing && !char.noArrow
+                      ? "#d252e1"
+                      : "#0032FF"
+                  }
+                />
               )} */}
               {char.adding && (
                 <Circle
