@@ -68,9 +68,9 @@ export class LinkedList<T> implements ILinkedList<T> {
     if (!this.head) {
       return null;
     }
-
+  
     const deletedHead = this.head;
-
+  
     // Если у head есть ссылка на следующий "next" узел
     // то делаем его новым head.
     if (this.head.next) {
@@ -81,10 +81,10 @@ export class LinkedList<T> implements ILinkedList<T> {
       this.head = null;
       this.tail = null;
     }
-    this.size--;
+  
     return deletedHead;
   }
-
+  
   deleteTail() {
     // Если нет tail, значит список пуст.
 

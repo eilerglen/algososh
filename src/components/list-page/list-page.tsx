@@ -35,7 +35,6 @@ export const ListPage: React.FC = () => {
   const [arrayOfCircles, setArrayCircles] = useState<listItemProps[]>([]);
   const [linkedList, setLinkedList] = useState<ILinkedList<string>>();
 
-
   const sortAndWait = async (arr: listItemProps[]) => {
     setArrayCircles([...arr]);
     await pause(SHORT_PAUSE);
@@ -74,6 +73,7 @@ export const ListPage: React.FC = () => {
     setValue("");
   };
 
+  //Добавить в конце списка
   const addToTail = async () => {
     const copyArr = [...arrayOfCircles];
     linkedList!.print();
@@ -118,11 +118,12 @@ export const ListPage: React.FC = () => {
     setValue("");
   };
 
+  //Добавить в конце списка
   const removeFromHead = async () => {
     const copyArr = [...arrayOfCircles];
     linkedList!.print();
     // Удаляем элемент из списка и сразу берём его значение
-    const deletedElement = linkedList!.removeFromPosition(0);
+    const deletedElement = linkedList!.deleteHead();
     linkedList!.print();
     // Смещаем голову в нижний кружок
     copyArr[0] = {
@@ -130,9 +131,10 @@ export const ListPage: React.FC = () => {
       char: "",
       deleting: true,
       extraCircle: {
-        char: deletedElement ? deletedElement : "",
+        char: "",
       },
     };
+
     await sortAndWait([...copyArr]);
     // Удаляем элемент и подсвечиваем новую голову
     copyArr.shift();
@@ -141,6 +143,9 @@ export const ListPage: React.FC = () => {
     // Убираем подсветку с новой головы
     copyArr[0].state = TStatusObject.Default;
   };
+
+
+  //Удалить из конца списка
 
   const removeFromTail = async () => {
     const copyArr = [...arrayOfCircles];
@@ -212,6 +217,7 @@ export const ListPage: React.FC = () => {
     setIdx(undefined);
   };
 
+  // Удалить по
   const removeByIdx = async (idx: number) => {
     const copyArr = [...arrayOfCircles];
     const deletingValue = copyArr[idx!].char;
@@ -246,8 +252,8 @@ export const ListPage: React.FC = () => {
   return (
     <SolutionLayout title="Связный список">
       <div className={styles.container}>
-      <div className={styles.containerInput}>
-      <Input
+        <div className={styles.containerInput}>
+          <Input
             extraClass={styles.input}
             placeholder="Введите значение"
             min={1}
@@ -259,8 +265,8 @@ export const ListPage: React.FC = () => {
             maxLength={4}
           />
           <Button
-           mixin={styles.button}
-            disabled={ !value || arrayOfCircles.length > maxNum}
+            mixin={styles.button}
+            disabled={!value || arrayOfCircles.length > maxNum}
             // isLoader={addingToHead}
             text="Добавить в head"
             type="button"
@@ -284,15 +290,14 @@ export const ListPage: React.FC = () => {
           />
           <Button
             mixin={styles.button}
-            disabled={ arrayOfCircles.length <= 1}
+            disabled={arrayOfCircles.length <= 1}
             // isLoader={deletingFromTail}
             text="Удалить из tail"
             type="button"
             onClick={() => removeFromTail()}
           />
-
-        </div>;
-
+        </div>
+        ;
         <div className={styles.containerInput}>
           <Input
             type="text"
@@ -321,12 +326,13 @@ export const ListPage: React.FC = () => {
           <Button
             mixin={styles.bigButton}
             // isLoader={deletingByIdx}
-            disabled={!idx  || idx > arrayOfCircles.length - 1}
+            disabled={!idx || idx > arrayOfCircles.length - 1}
             text="Удалить по индексу"
             type="button"
             onClick={() => idx && removeByIdx(idx)}
           />
-         </div>;
+        </div>
+        ;
       </div>
       <ul className={styles.circleList}>
         {arrayOfCircles.map((char, idx) => {
