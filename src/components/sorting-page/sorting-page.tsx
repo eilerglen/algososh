@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import { Button } from "../../ui/button/button";
 import { RadioButton } from "../../ui/radio-button/radio-button";
 import { swap, pause } from "../../utils/utils";

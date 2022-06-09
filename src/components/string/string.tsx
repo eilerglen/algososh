@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Input } from "../ui/input/input";
+import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
+import { Input } from "../../ui/input/input";
 import { Button } from "../../ui/button/button";
-import { Circle } from "../ui/circle/circle";
+import { Circle } from "../../ui/circle/circle";
 import { TStatusObject} from "../../types/statusObject";
 import { swap, pause } from "../../utils/utils";
 import styles from "./string.module.css";
 import {  SHORT_PAUSE } from "../../constants/pauseLimits";
 import { ISymbolProps } from "./utils";
 import {changeState} from './utils'
+import { stringReverseAlgo} from "./utils";
 
 export const StringComponent: React.FC = () => {
   const [inputValue, setInputValue] = useState(""); 
@@ -27,19 +28,9 @@ export const StringComponent: React.FC = () => {
   
   const stringReverse = async (arr: Array<ISymbolProps>) => {
     setInProgress(true);
-    let end = arr.length - 1;
-    for (let start = 0; start <= end; start++) {
-      if (start === end) {
-        await changeStateRender(arr, "changing", start, end)
-        changeState(arr, "modified", start);
-        setCharArr([...arr])
-      }
-      await changeStateRender(arr, "changing", start, end)
-      swap(arr, start, end);
-      await changeStateRender(arr, "modified", start, end)
-      end--;
-    }
+    stringReverseAlgo(arr,  changeStateRender, TStatusObject.Changing, TStatusObject.Modified)
     setInProgress(false);
+
   }
 
   //Рендер вводимых символов.
@@ -65,6 +56,11 @@ export const StringComponent: React.FC = () => {
     }
     stringReverse(charArr);
   }
+
+  //Сброс инпута.
+  const resetInput = () => {
+    setInputValue("");
+  };
 
   return (
     <SolutionLayout title="Строка">

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../ui/button/button";
-import { Input } from "../ui/input/input";
+import { Input } from "../../ui/input/input";
 import { Stack } from "./utils";
-import { Circle } from "../ui/circle/circle";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { Circle } from "../../ui/circle/circle";
+import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import { SHORT_PAUSE } from "../../constants/pauseLimits";
 import { TStatusObject } from "../../types/statusObject";
 import { pause } from "../../utils/utils";

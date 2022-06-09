@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Circle } from "../ui/circle/circle";
+import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
+import { Circle } from "../../ui/circle/circle";
 import { Button } from "../../ui/button/button";
-import { Input } from "../ui/input/input";
+import { Input } from "../../ui/input/input";
 import { SHORT_PAUSE } from "../../constants/pauseLimits";
 import { TStatusObject } from "../../types/statusObject";
 import { pause } from "../../utils/utils";
@@ -22,11 +22,11 @@ export const QueuePage: React.FC = () => {
     state: TStatusObject.Default,
   }));
 
+  //Создаем пачку стейтов
   const [inputValue, setInputValue] = useState<string>("");
   const [renderValues, setRenderValues] =
     useState<QueueObject[]>(renderDefault);
   const [queue, setQueue] = useState<IQueue<string>>(queueInstanse); //стейт инстанса класса
-  const [headIdx, setHeadIdx] = useState<number | null>(null);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
   //Добавить в очередь

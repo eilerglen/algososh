@@ -1,4 +1,4 @@
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import { useEffect, useState } from "react";
 import { TStatusObject } from "../../types/statusObject";
 import { listItemProps } from "../../types/listItem";
@@ -6,9 +6,9 @@ import { pause } from "../../utils/utils";
 import { LinkedList, ILinkedList } from "./utils";
 import styles from "./list-page.module.css";
 import { Button } from "../../ui/button/button";
-import { Circle } from "../ui/circle/circle";
+import { Circle } from "../../ui/circle/circle";
 import { SHORT_PAUSE } from "../../constants/pauseLimits";
-import { Input } from "../ui/input/input";
+import { Input } from "../../ui/input/input";
 import { getNumber } from "../../utils/utils";
 
 export const ListPage: React.FC = () => {

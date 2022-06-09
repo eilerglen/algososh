@@ -1,10 +1,10 @@
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import React, { useEffect, useState } from "react";
 import { SHORT_PAUSE } from "../../constants/pauseLimits";
 import { pause } from "../../utils/utils";
 import { Button } from "../../ui/button/button";
-import { Circle } from "../ui/circle/circle";
-import { Input } from "../ui/input/input";
+import { Circle } from "../../ui/circle/circle";
+import { Input } from "../../ui/input/input";
 import { fibbonachi } from "./utils";
 import styles from "./fibonacci-page.module.css";
 
