@@ -174,6 +174,7 @@ export const ListPage: React.FC = () => {
     copyArr[length - 2].state = TStatusObject.Default;
   };
 
+  //Добавить по индексу
   const addByIdx = async (idx: number) => {
     const copyArr = [...arrayOfCircles];
     linkedList!.print();
@@ -312,11 +313,12 @@ export const ListPage: React.FC = () => {
           <Button
             mixin={styles.bigButton}
             disabled={
-              !value ||
-              !idx ||
+              false
+              // !value ||
+              // !idx ||
               // inProgress ||
-              idx > arrayOfCircles.length - 1 ||
-              arrayOfCircles.length > maxNum
+              // idx > arrayOfCircles.length - 1 ||
+              // arrayOfCircles.length > maxNum
             }
             // isLoader={addingByIdx}
             text="Добавить по индексу"

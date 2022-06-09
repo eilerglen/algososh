@@ -14,21 +14,18 @@ import styles from "./stack-page.module.css";
 export const StackPage: React.FC = () => {
   const stackInstanse = new Stack<string>();
   const [inputValue, setInputValue] = useState<string>("");
-  const [renderValues, setRenderValues] = useState<Array<any>>([]);
+  const [renderValues, setRenderValues] = useState<Array<StackObject>>([]);
   const [stackValues, setStackValues] = useState<IStack<string>>(stackInstanse);
   const [inProgress, setInProgress] = useState<boolean>(false);
-  useEffect(() => {
-    console.log(stackValues);
-  });
+
 
   //Добавить значение в стек
+
   const handlePush = async () => {
-    setInputValue("");
-    resetInput();
+    setInProgress(true);
     stackValues.push(inputValue);
     // setStackValues([...stackValues]);
     const newElement = stackValues.peak();
-    console.log(newElement);
     renderValues.push({
       char: newElement,
       state: TStatusObject.Changing,
@@ -38,22 +35,24 @@ export const StackPage: React.FC = () => {
     await pause(SHORT_PAUSE);
     renderValues[renderValues.length - 1].state = TStatusObject.Default;
     setRenderValues([...renderValues]);
-    console.log(stackValues.getSize());
+    resetInput();
+    setInProgress(false);
   };
+
+  
 
   //Удалить значение из стека
 
   const handlePop = async () => {
+    setInProgress(true);
     stackValues!.pop();
     const size = stackValues.getSize();
     if (size !== 0) {
-     
       renderValues[renderValues.length - 1].state = TStatusObject.Changing;
       renderValues[renderValues.length - 1].head = "top";
       setRenderValues([...renderValues]);
       renderValues.pop();
       await pause(SHORT_PAUSE);
-     
       // renderValues[renderValues.length - 1].state = TStatusObject.Default;
       // await pause(SHORT_PAUSE);
       setRenderValues([...renderValues]);
@@ -61,15 +60,13 @@ export const StackPage: React.FC = () => {
       setRenderValues([]);
 
     }
-
-
-    // setRenderValues([]);
+    setInProgress(false);
   };
 
-  //Сборос инпута.
-  const resetInput = () => {
-    document.querySelectorAll("input")[0].value = "";
-  };
+ //Сброс инпута.
+ const resetInput = () => {
+  setInputValue("");
+}
 
   //Очистить все данные.
   const clear = () => {
@@ -86,6 +83,7 @@ export const StackPage: React.FC = () => {
           onChange={(e: any) => {
             setInputValue(e.target.value);
           }}
+          value = {inputValue}
         />
         <Button
           text={"Добавить"}

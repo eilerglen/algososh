@@ -4,7 +4,7 @@ import { TStatusObject } from "../../../types/statusObject";
 
 interface CircleProps {
   state?: TStatusObject;
-  letter?: string;
+  letter?: string | null;
   head?: string | React.ReactElement | null;
   index?: number;
   tail?: string | React.ReactElement | null;

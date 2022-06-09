@@ -190,6 +190,7 @@ export class LinkedList<T> implements ILinkedList<T> {
     return current ? current.value : null
   }
 
+  //Вывести значение
   print() {
     let curr = this.head;
     let res = "";

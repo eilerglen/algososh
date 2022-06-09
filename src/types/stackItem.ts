@@ -1,7 +1,7 @@
 import { TStatusObject } from "./statusObject";
 
 export interface StackObject {
-  letter: string | null;
+  char?: string | null;
   state: TStatusObject;
   head?: "top";
 }
