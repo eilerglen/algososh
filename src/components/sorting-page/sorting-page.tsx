@@ -6,7 +6,7 @@ import { swap, pause } from "../../utils/utils";
 import stylesSortingPage from "./sorting.page.module.css";
 import { Column } from "../../ui/column/column";
 import { TStatusObject } from "../../types/statusObject";
-import { TDirection } from "../../types/direction";
+import { Direction } from "../../types/direction";
 import { generateRandomArr } from "../../utils/generateRandomArr";
 import { bubbleSort } from "./utils/bubbleSort";
 import { selectionSort } from "./utils/selectionSort";
@@ -15,6 +15,7 @@ import { columnObject } from "../../types/columns";
 export const SortingPage: React.FC = () => {
   const [sortType, setSortType] = useState<string>("selection");
   const [initialArr, setInitialArr] = useState<Array<columnObject>>([]);
+  const [inProgress, setInProgress] = useState<boolean>(false);
 
   const generateArr = () => {
     setInitialArr([...generateRandomArr()]);
@@ -23,6 +24,27 @@ export const SortingPage: React.FC = () => {
   useEffect(() => {
     generateArr();
   }, []);
+
+
+  const startSort = async (direction: any, sortType: string) => {
+    //Сброс уже отсортированного массива.
+    if (initialArr[0].state === 'modified') {
+      setInitialArr(initialArr.map((item: columnObject) => {
+        item.state = TStatusObject.Default;
+        return item
+      }))
+    }
+    //Блокирование кнопок.
+    setInProgress(true);
+    //Сортировка выбором.
+    if (sortType === "selection") await selectionSort(direction, setInitialArr, initialArr);
+    //Сортировка пузырьком.
+    else {
+      await bubbleSort(direction, setInitialArr, initialArr)
+    }
+    //Разблокирование кнопок.
+    setInProgress(false);
+  }
 
   return (
     <SolutionLayout title="Сортировка массива">
@@ -33,6 +55,7 @@ export const SortingPage: React.FC = () => {
           onChange={() => setSortType("selection")}
           value="selection"
           checked={sortType === "selection"}
+          
         />
         <RadioButton
           label="Пузырёк"
@@ -43,31 +66,27 @@ export const SortingPage: React.FC = () => {
         />
         <Button
           text="По возрастанию"
-          sorting={"ascending"}
+          sorting={Direction.Ascending}
           mixin={stylesSortingPage.button}
           type="submit"
-          onClick={() =>
-            sortType === "bubble"
-              ? bubbleSort("ascending", setInitialArr, initialArr)
-              : selectionSort("ascending", setInitialArr, initialArr)
+          onClick={() => startSort('ascending', sortType)
           }
+          disabled={inProgress}
         />
         <Button
           text="По убыванию"
-          sorting={"descending"}
+          sorting={Direction.Descending}
           mixin={stylesSortingPage.button}
           type="submit"
-          onClick={() =>
-            sortType === "bubble"
-              ? bubbleSort("descending", setInitialArr, initialArr)
-              : selectionSort("descending", setInitialArr, initialArr)
+          onClick={() => startSort('descending', sortType)
           }
+          disabled={inProgress}
         />
         <Button
           text="Новый массив"
           mixin={stylesSortingPage.button}
           onClick={generateArr}
-          // isLoader={inProgress}
+          isLoader={inProgress}
         />
       </div>
       <div className={`${stylesSortingPage["flex-container-list"]}`}>

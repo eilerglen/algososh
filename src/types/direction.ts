@@ -1,1 +1,4 @@
-export type TDirection = 'ascending' | 'descending'
+export enum Direction {
+    Ascending = "ascending",
+    Descending = "descending",
+  }

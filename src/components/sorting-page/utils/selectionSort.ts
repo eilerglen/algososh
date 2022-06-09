@@ -9,10 +9,11 @@ import {
   focusingModifiedElement,
   focusingMinMaxElement,
 } from "./modificateStatus";
+import { Direction } from "../../../types/direction";
 
 
 export const selectionSort = async (
-  option: "ascending" | "descending",
+  option: Direction.Ascending |Direction.Ascending,
   setInitialArr: React.Dispatch<React.SetStateAction<columnObject[]>>,
   initialArr: columnObject[]
 ) => {
@@ -37,7 +38,7 @@ export const selectionSort = async (
       // overWriteArr(arr,  setInitialArr);
       await pause(LONG_PAUSE)
       if (
-        ( option === "ascending" ? arr[swapInd].num : arr[j].num) > ( option === "ascending" ? arr[j].num : arr[swapInd].num)
+        ( option === Direction.Ascending? arr[swapInd].num : arr[j].num) > ( option === Direction.Ascending ? arr[j].num : arr[swapInd].num)
       ) {
         arr[j].state =  TStatusObject.Chosen; //если у нас i-ый элемент(swapInd) больше j то делаем j-ый элемент желтым
         arr[swapInd].state =

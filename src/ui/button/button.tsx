@@ -3,12 +3,12 @@ import styles from "./button.module.css";
 import loaderIcon from "../../images/icons/loader.svg";
 import { Ascending } from "../../ui/icons/ascending/ascending";
 import { Descending } from "../../ui/icons/descending/descending";
-import  {TDirection}  from "../../types/direction";
+import  {Direction}  from "../../types/direction";
 
 interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   text?: string;
   type?: "button" | "submit" | "reset";
-  sorting?: TDirection;
+  sorting?: Direction;
   linkedList?: "small" | "big";
   isLoader?: boolean;
   mixin?: string;

@@ -7,9 +7,10 @@ import {
   focusingCurrentElements,
   checkSortedElement,
 } from "./modificateStatus";
+import { Direction } from "../../../types/direction";
 
 export const bubbleSort = async (
-  option: "ascending" | "descending",
+  option: Direction.Ascending | Direction.Descending,
   setInitialArr: React.Dispatch<React.SetStateAction<columnObject[]>>,
   initialArr: columnObject[]
 ) => {
@@ -24,8 +25,8 @@ export const bubbleSort = async (
       await pause( SHORT_PAUSE);
       // Если один больше (меньше) другого - свапаем их
       if (
-        (option === "ascending" ? arr[j].num : arr[j + 1].num) >
-        (option === "ascending" ? arr[j + 1].num : arr[j].num)
+        (option === Direction.Ascending ? arr[j].num : arr[j + 1].num) >
+        (option === Direction.Ascending ? arr[j + 1].num : arr[j].num)
       ) {
         setInitialArr([...arr])
         swap(arr, j, j + 1);

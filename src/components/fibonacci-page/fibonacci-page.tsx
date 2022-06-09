@@ -32,6 +32,10 @@ export const FibonacciPage: React.FC = () => {
     setInProgress(false);
   }
 
+  const handleInputNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputNum(+e.target.value)
+  }
+
   //Рендер каждого числа.
   const renderNumber = (num: number, ind: number) => {
     return (
@@ -53,7 +57,7 @@ export const FibonacciPage: React.FC = () => {
           isLimitText={true}
           max={19}
           type={"number"}
-          onChange={(e: any) => setInputNum(+e.target.value)}
+          onChange={handleInputNumber}
         />
 
         <Button
