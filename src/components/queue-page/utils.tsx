@@ -7,6 +7,7 @@ export interface IQueue<T> {
   getHead: () => number
   getTail: () => number
   getValue: (ind: number) => any
+  isEmpty: () => boolean
 }
 
 export class Queue<T> implements IQueue<T> {
