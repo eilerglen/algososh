@@ -1,7 +1,7 @@
 import { swap} from "../../utils/utils";
 import { TStatusObject} from "../../types/statusObject";
 
-interface symbolProps {
+export interface ISymbolProps {
   symbol: string;
   state: TStatusObject;
 }
@@ -15,7 +15,7 @@ interface symbolProps {
   }
 
   //Изменить статус/внешний вид символов.
-  export const stringReversePro = async (arr: Array<symbolProps>, callback: Function, status: string) => {
+  export const stringReversePro = async (arr: Array<ISymbolProps>, callback: Function, status: string) => {
     let step = 0
     let end = arr.length - 1;
     for (let start = 0; start <= end; start++) {

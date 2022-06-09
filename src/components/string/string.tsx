@@ -7,20 +7,17 @@ import { TStatusObject} from "../../types/statusObject";
 import { swap, pause } from "../../utils/utils";
 import styles from "./string.module.css";
 import {  SHORT_PAUSE } from "../../constants/pauseLimits";
+import { ISymbolProps } from "./utils";
 import {changeState} from './utils'
 
-interface symbolProps {
-  symbol: string;
-  state:TStatusObject;
-}
-
 export const StringComponent: React.FC = () => {
-  const [charArr, setCharArr] = useState<Array<symbolProps>>([]);
+  const [inputValue, setInputValue] = useState(""); 
+   const [charArr, setCharArr] = useState<Array<ISymbolProps>>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
   // Меняем статус кружка с паузой
 
-  const changeStateRender = async (arr: Array<symbolProps>, status: string, startIndex: number, endIndex: number) => {
+  const changeStateRender = async (arr: Array<ISymbolProps>, status: string, startIndex: number, endIndex: number) => {
     changeState(arr, status, startIndex, endIndex );
     setCharArr([...arr])
     await pause(SHORT_PAUSE)
@@ -28,7 +25,7 @@ export const StringComponent: React.FC = () => {
 
   // Главная функция
   
-  const stringReverse = async (arr: Array<symbolProps>) => {
+  const stringReverse = async (arr: Array<ISymbolProps>) => {
     setInProgress(true);
     let end = arr.length - 1;
     for (let start = 0; start <= end; start++) {
@@ -46,14 +43,16 @@ export const StringComponent: React.FC = () => {
   }
 
   //Рендер вводимых символов.
-  const renderInputNumbers = (event: any) => {
-    setCharArr(event.target.value.split('').map((symbol: any) => {
+  const renderInputNumbers = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setCharArr(evt.target.value.split('').map((symbol: string) => {
       return {
         symbol: symbol,
-        state: "default",
+        state: TStatusObject.Default
       }
     }))
   }
+
+ 
 
   //Запуск функции перестановки по нажатию кнопки.
   const handleStartAnimation = async () => {
@@ -84,7 +83,7 @@ export const StringComponent: React.FC = () => {
       </div>
       <div className={`${styles['flex-container']}`}>
         <ul className={styles.list}>
-          {charArr && charArr.map((el: symbolProps, ind) =>
+          {charArr && charArr.map((el: ISymbolProps, ind) =>
             <li className={`${styles['list-elem']}` } key={ind}>
               <Circle
                 letter={el.symbol}
