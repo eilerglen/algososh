@@ -34,7 +34,6 @@ export const selectionSort = async (
     for (let j = i + 1; j < length; j++) {
       focusingCheckedElement(arr, j)
       setInitialArr([...arr])
-      // overWriteArr(arr,  setInitialArr);
       await pause(LONG_PAUSE)
       if (
         ( option === Direction.Ascending? arr[swapInd].num : arr[j].num) > ( option === Direction.Ascending ? arr[j].num : arr[swapInd].num)
