@@ -93,10 +93,10 @@ export const QueuePage: React.FC = () => {
 
   //Очистить очередь
   const handleClear = () => {
-    const newQueueInstanse = new Queue<string>(7);
-    setQueue(newQueueInstanse);
+    queue.clear()
     setRenderValues([...renderDefault]);
   };
+
 
   //Сброс инпута.
   const resetInput = () => {

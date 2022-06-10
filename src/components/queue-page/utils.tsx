@@ -8,6 +8,7 @@ export interface IQueue<T> {
   getTail: () => number
   getValue: (ind: number) => any
   isEmpty: () => boolean
+  clear: () => void
 }
 
 export class Queue<T> implements IQueue<T> {
@@ -72,4 +73,7 @@ export class Queue<T> implements IQueue<T> {
 
   getSize = () => this.size;
 
+  clear = () => {
+    this.length = 0
+  }
 }

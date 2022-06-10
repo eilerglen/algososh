@@ -8,7 +8,7 @@ export interface IStack<T> {
 }
 
 export class Stack<T> implements IStack<T> {
-  container: T[] = []
+  private container: T[] = []
 
   push = async (item: T) => {
     this.container.push(item);

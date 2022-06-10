@@ -40,7 +40,6 @@ export const ListPage: React.FC = () => {
 
   const [value, setValue] = useState<string>("");
   const [inProgress, setInProgress] = useState<boolean>(false);
-  const [disabledBtn, setDisabledBtn] = useState<boolean>(true);
   const [idx, setIdx] = useState<number>();
   const [arrayOfCircles, setArrayCircles] = useState<listItemProps[]>([]);
   const [linkedList, setLinkedList] = useState<ILinkedList<string>>();
