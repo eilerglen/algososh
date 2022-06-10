@@ -1,5 +1,5 @@
 import { swap } from "../../utils/utils";
-import { TStatusObject } from "../../types/statusObject";
+import { TStatusObject } from "../../types/enums/statusObject";
 
 export interface ISymbolProps {
   symbol: string;

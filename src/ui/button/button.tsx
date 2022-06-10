@@ -3,7 +3,7 @@ import styles from "./button.module.css";
 import loaderIcon from "../../images/icons/loader.svg";
 import { Ascending } from "../../ui/icons/ascending/ascending";
 import { Descending } from "../../ui/icons/descending/descending";
-import  {Direction}  from "../../types/direction";
+import  {Direction}  from "../../types/enums/direction";
 
 interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   text?: string;

@@ -3,21 +3,22 @@ import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import { Circle } from "../../ui/circle/circle";
 import { Button } from "../../ui/button/button";
 import { Input } from "../../ui/input/input";
-import { SHORT_PAUSE } from "../../constants/pauseLimits";
-import { TStatusObject } from "../../types/statusObject";
+import { SHORT_PAUSE } from "../../constants/constants";
+import { TStatusObject } from "../../types/enums/statusObject";
 import { pause } from "../../utils/utils";
 import styles from "./queue-page.module.css";
 import { Queue } from "./utils";
 import { IQueue } from "./utils";
 import { QueueObject } from "../../types/queueItem";
 import { MAX_SIZE } from "./utils";
+import { IStackObject } from "../../types/stackItem";
 
 export const QueuePage: React.FC = () => {
   //Создаем инстанс класса
   const queueInstanse = new Queue<string>(MAX_SIZE);
 
   //Создаем стартовый рендер
-  const renderDefault: any[] = Array.from({ length: MAX_SIZE }, () => ({
+  const renderDefault: IStackObject[] = Array.from({ length: MAX_SIZE }, () => ({
     char: "",
     state: TStatusObject.Default,
   }));
@@ -28,17 +29,17 @@ export const QueuePage: React.FC = () => {
     useState<QueueObject[]>(renderDefault);
   const [queue, setQueue] = useState<IQueue<string>>(queueInstanse); //стейт инстанса класса
   const [inProgress, setInProgress] = useState<boolean>(false);
-
-  //Добавить в очередь
+  
+  
   const tempArr = [...renderValues];
 
+  //Добавить в очередь
   const handleEnqueue = async () => {
     setInProgress(true);
     queue.enqueue(inputValue);
     //Получаем индексы
     const currentHead = queue.getHead();
     const currentTail = queue.getTail();
-    console.log(currentHead);
     //Получаем значения по индексам
     const valueHead = queue.getValue(currentHead);
     const valueTail = queue.getValue(currentTail);
@@ -108,7 +109,7 @@ export const QueuePage: React.FC = () => {
           maxLength={4}
           extraClass={styles.input}
           isLimitText={true}
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setInputValue(e.target.value);
           }}
           value={inputValue}

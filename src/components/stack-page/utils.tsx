@@ -1,7 +1,3 @@
-import { SHORT_PAUSE } from '../../constants/pauseLimits';
-import {StackObject} from '../../types/stackItem'
-import { TStatusObject } from "../../types/statusObject";
-import { pause } from '../../utils/utils';
 
 export interface IStack<T> {
   push: (item: T) => void;
@@ -16,7 +12,6 @@ export class Stack<T> implements IStack<T> {
 
   push = async (item: T) => {
     this.container.push(item);
-    // this.callbackPush(); // Колбэк
   };
 
   pop = async () => {

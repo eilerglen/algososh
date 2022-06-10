@@ -4,17 +4,17 @@ import { Input } from "../../ui/input/input";
 import { Stack } from "./utils";
 import { Circle } from "../../ui/circle/circle";
 import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
-import { SHORT_PAUSE } from "../../constants/pauseLimits";
-import { TStatusObject } from "../../types/statusObject";
+import { SHORT_PAUSE } from "../../constants/constants";
+import { TStatusObject } from "../../types/enums/statusObject";
 import { pause } from "../../utils/utils";
-import { StackObject } from "../../types/stackItem";
+import { IStackObject } from "../../types/stackItem";
 import { IStack } from "./utils";
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
   const stackInstanse = new Stack<string>();
   const [inputValue, setInputValue] = useState<string>("");
-  const [renderValues, setRenderValues] = useState<Array<StackObject>>([]);
+  const [renderValues, setRenderValues] = useState<Array<IStackObject>>([]);
   const [stackValues, setStackValues] = useState<IStack<string>>(stackInstanse);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
@@ -24,7 +24,6 @@ export const StackPage: React.FC = () => {
   const handlePush = async () => {
     setInProgress(true);
     stackValues.push(inputValue);
-    // setStackValues([...stackValues]);
     const newElement = stackValues.peak();
     renderValues.push({
       char: newElement,
@@ -53,8 +52,6 @@ export const StackPage: React.FC = () => {
       setRenderValues([...renderValues]);
       renderValues.pop();
       await pause(SHORT_PAUSE);
-      // renderValues[renderValues.length - 1].state = TStatusObject.Default;
-      // await pause(SHORT_PAUSE);
       setRenderValues([...renderValues]);
     } else {
       setRenderValues([]);
@@ -80,7 +77,7 @@ export const StackPage: React.FC = () => {
           maxLength={4}
           extraClass={styles.input}
           isLimitText={true}
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setInputValue(e.target.value);
           }}
           value = {inputValue}

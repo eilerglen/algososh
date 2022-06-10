@@ -1,16 +1,16 @@
 import React from "react";
 import { swap, pause } from "../../../utils/utils";
 import { columnObject } from "../../../types/columns";
-import { TStatusObject } from "../../../types/statusObject";
-import { SHORT_PAUSE } from "../../../constants/pauseLimits";
+import { TStatusObject } from "../../../types/enums/statusObject";
+import { SHORT_PAUSE } from "../../../constants/constants";
 import {
   focusingCurrentElements,
   checkSortedElement,
 } from "./modificateStatus";
-import { Direction } from "../../../types/direction";
+import { Direction } from "../../../types/enums/direction";
 
 export const bubbleSort = async (
-  option: Direction.Ascending | Direction.Descending,
+  option: Direction.Ascending,
   setInitialArr: React.Dispatch<React.SetStateAction<columnObject[]>>,
   initialArr: columnObject[]
 ) => {

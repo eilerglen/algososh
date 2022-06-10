@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./circle.module.css";
-import { TStatusObject } from "../../types/statusObject";
+import { TStatusObject } from "../../types/enums/statusObject";
 
 interface CircleProps {
   state?: TStatusObject;

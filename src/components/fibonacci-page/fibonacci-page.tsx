@@ -1,6 +1,6 @@
 import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import React, { useEffect, useState } from "react";
-import { SHORT_PAUSE } from "../../constants/pauseLimits";
+import { SHORT_PAUSE } from "../../constants/constants";
 import { pause } from "../../utils/utils";
 import { Button } from "../../ui/button/button";
 import { Circle } from "../../ui/circle/circle";

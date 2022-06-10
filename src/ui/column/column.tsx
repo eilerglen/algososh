@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styleColumn from "./column.module.css";
-import {TStatusObject} from '../../types/statusObject'
+import {TStatusObject} from '../../types/enums/statusObject'
 
 interface ColumnProps {
   index: number;

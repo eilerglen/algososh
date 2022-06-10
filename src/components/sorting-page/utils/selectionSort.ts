@@ -1,19 +1,19 @@
 import React from "react";
 import { swap, pause } from "../../../utils/utils";
 import { columnObject } from "../../../types/columns";
-import { TStatusObject } from "../../../types/statusObject";
-import { LONG_PAUSE } from "../../../constants/pauseLimits";
+import { TStatusObject } from "../../../types/enums/statusObject";
+import { LONG_PAUSE } from "../../../constants/constants";
 import {
   focusingCheckedElement,
   focusingInitElement,
   focusingModifiedElement,
   focusingMinMaxElement,
 } from "./modificateStatus";
-import { Direction } from "../../../types/direction";
+import { Direction } from "../../../types/enums/direction";
 
 
 export const selectionSort = async (
-  option: Direction.Ascending |Direction.Ascending,
+  option: Direction.Ascending,
   setInitialArr: React.Dispatch<React.SetStateAction<columnObject[]>>,
   initialArr: columnObject[]
 ) => {
@@ -27,7 +27,6 @@ export const selectionSort = async (
     let swapInd = i;
     focusingInitElement(arr, i)
     setInitialArr([...arr])
-    // overWriteArr(arr,  setInitialArr);
     await pause(LONG_PAUSE)
 
     //Начинаем внутренний цикл
@@ -45,12 +44,9 @@ export const selectionSort = async (
           i === swapInd ?  TStatusObject.Chosen : TStatusObject.Default; //задаем цвет столбика по такому правилу если у нас index i равен (swapInd) делаем его желтым цветом ,остальное дефолтным
         swapInd = j; //начинаем переопределять индекс наименьшего элемента. Двигаем его вправо, если есть эелементы меньше до самого минимального
         setInitialArr([...arr])
-        // overWriteArr(arr, setInitialArr);
         await pause(LONG_PAUSE)
       }
       focusingMinMaxElement(arr, j, swapInd)
-      // arr[j].state =
-      //   swapInd === j ? TStatusObject.Chosen :  TStatusObject.Default;
     }
 
     if (i === swapInd) {
@@ -58,7 +54,6 @@ export const selectionSort = async (
       //То есть нчиего местами менять не нужно
       focusingModifiedElement(arr, i) 
       setInitialArr([...arr])
-      // overWriteArr(arr, setInitialArr);
       await pause(LONG_PAUSE)
     }
    

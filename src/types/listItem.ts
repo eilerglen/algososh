@@ -1,4 +1,4 @@
-import { TStatusObject } from "./statusObject";
+import { TStatusObject } from "./enums/statusObject";
 
 export interface listItemProps {
   adding?: boolean;
@@ -7,7 +7,7 @@ export interface listItemProps {
   tail?: string;
   head?: string;
   char?: string;
-  state: TStatusObject;
+  state?: TStatusObject;
   extraCircle?: {
     char: string;
   }

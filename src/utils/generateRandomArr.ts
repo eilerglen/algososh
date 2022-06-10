@@ -1,4 +1,4 @@
-import { TStatusObject } from "../types/statusObject";
+import { TStatusObject } from "../types/enums/statusObject";
 
 export const generateRandomArr = () => {
     let initArr = [];

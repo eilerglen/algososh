@@ -3,10 +3,10 @@ import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import { Input } from "../../ui/input/input";
 import { Button } from "../../ui/button/button";
 import { Circle } from "../../ui/circle/circle";
-import { TStatusObject} from "../../types/statusObject";
+import { TStatusObject} from "../../types/enums/statusObject";
 import { swap, pause } from "../../utils/utils";
 import styles from "./string.module.css";
-import {  SHORT_PAUSE } from "../../constants/pauseLimits";
+import {  SHORT_PAUSE } from "../../constants/constants";
 import { ISymbolProps } from "./utils";
 import {changeState} from './utils'
 import { stringReverseAlgo} from "./utils";
@@ -49,8 +49,8 @@ export const StringComponent: React.FC = () => {
   const handleStartAnimation = async () => {
     //Вернуть в дефолтное состояние, если строка уже отсортирована.
     if (charArr[0].state === 'modified') {
-      setCharArr(charArr.map((symbol: any) => {
-        symbol.state = "default";
+      setCharArr(charArr.map((symbol: ISymbolProps) => {
+        symbol.state = TStatusObject.Default;
         return symbol
       }))
     }

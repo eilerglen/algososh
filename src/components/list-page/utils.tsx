@@ -1,8 +1,3 @@
-import { reverse } from "dns/promises";
-import { findConfigFile } from "typescript";
-import { TStatusObject } from "../../types/statusObject";
-import { pause } from "../../utils/utils";
-
 export class Node<T> {
   value: T;
   next: Node<T> | null;
@@ -15,8 +10,8 @@ export class Node<T> {
 export interface ILinkedList<T> {
   addToHead: (value: T) => void;
   addToTail: (value: T) => void;
-  deleteHead: () => void
-  deleteTail: () => void
+  deleteHead: () => T | null;
+  deleteTail: () => T | null;
   getNodeToIndex: (index: number) => T | null;
   insertFromPosition: (value: T, index: number) => void;
   removeFromPosition: (index: number) => T | null;
@@ -31,16 +26,15 @@ export class LinkedList<T> implements ILinkedList<T> {
 
   constructor(initArr: T[]) {
     this.head = null;
-    this.tail = null;
     this.size = 0;
-    initArr?.forEach(item => this.insertFromPosition(item, 0))
+    initArr?.forEach((item) => this.insertFromPosition(item, 0));
   }
- // Добавить в начало
+
+  // Добавить в начало
   addToHead = (value: T) => {
     let node = new Node<T>(value);
-    if (!this.head || !this.tail) {
+    if (!this.head) {
       this.head = node;
-      this.tail = node;
       return this;
     }
     node.next = this.head;
@@ -50,27 +44,26 @@ export class LinkedList<T> implements ILinkedList<T> {
   };
 
   // Добавить в конец
-  addToTail = (value: T) => {
-    let node = new Node<T>(value);
-    if (!this.head || !this.tail) {
+  addToTail(value: T) {
+    let node = new Node(value);
+    if (this.size === 0) {
       this.head = node;
-      this.tail = node;
-      return this;
     }
-    this.tail.next = node;
-    this.tail = node;
+    let currentNode = this.head;
+    while (currentNode && currentNode.next !== null) {
+      currentNode = currentNode.next;
+    }
+    if (currentNode) currentNode.next = node
     this.size++;
-    return this;
-  };
+  }
+
+  // Удалить из начала
 
   deleteHead() {
     // Если нет head значит список пуст.
-    if (!this.head) {
-      return null;
-    }
-  
-    const deletedHead = this.head;
-  
+    if (!this.head) return null;
+    let deletedHead = this.head;
+
     // Если у head есть ссылка на следующий "next" узел
     // то делаем его новым head.
     if (this.head.next) {
@@ -81,74 +74,53 @@ export class LinkedList<T> implements ILinkedList<T> {
       this.head = null;
       this.tail = null;
     }
-  
-    return deletedHead;
+    this.size--;
+    return deletedHead ? deletedHead.value : null;
   }
-  
-  deleteTail() {
-    // Если нет tail, значит список пуст.
 
-    if (!this.tail) {
+  // Удалить из конца
+
+  deleteTail() {
+    if (this.size === 0) {
       return null;
     }
-
-    // Сохраняем значение последнего узла.
-    const deletedTail = this.tail;
-
-    // Если head и tail равны, значит в списке только один узел.
-    if (this.head === this.tail) {
-      this.head = null;
-      this.tail = null;
-
-      return deletedTail;
-    }
-
-    // Если в связном списке много узлов.
-    // Перебираем все узлы и находим предпоследний узел,
-    // убираем ссылку «next» на последний узел.
+    
     let currentNode = this.head;
-    while (currentNode) {
-      //Если элемент ссылается на tail, то делаем его tail и его next обнуляем.
-      if (currentNode.next === this.tail) {
-        this.tail = currentNode;
-        currentNode.next = null;
-        this.size--;
-        return this;
-      }
-      //Перебираем элементы в цикле while выше.
+    let prev = null;
+    let currentIndex = 0;
+    while (currentIndex < this.size-1 && currentNode) {
+      prev = currentNode;
       currentNode = currentNode.next;
-      // В данном случае currentNode - это предпоследний узел или head,
-      // который становится последним узлом.
-      this.tail = currentNode;
-
-      return deletedTail;
+      currentIndex++;
     }
+    if (prev && currentNode) prev.next = currentNode.next;
+    this.size--;
+    return currentNode ? currentNode.value : null;
   }
 
   //Вставка по индексу
   insertFromPosition(value: T, index: number) {
     if (index < 0 || index > this.size) {
-      return;
-    } else {
-      let node = new Node<T>(value);
-      if (index === 0) {
-        node.next = this.head;
-        this.head = node;
-      } else {
-        let current = this.head;
-        let currentIndex = 0;
-        let prev = null;
-        while (currentIndex < index && current) {
-          prev = current;
-          current = current.next;
-          currentIndex++;
-        }
-      }
+      return null;
     }
-  }
 
-  getSize() {
-    return this.size;
+    let node = new Node<T>(value);
+    if (index === 0) {
+      node.next = this.head;
+      this.head = node;
+    } else {
+      let current = this.head;
+      let currentIndex = 0;
+      let prev = null;
+      while (currentIndex < index && current) {
+        prev = current;
+        current = current.next;
+        currentIndex++;
+      }
+      if (prev) prev.next = node;
+      node.next = current;
+    }
+    this.size++
   }
 
   //Удаление по индексу
@@ -180,14 +152,14 @@ export class LinkedList<T> implements ILinkedList<T> {
 
   //Получить элемент по индексу
   getNodeToIndex(index: number) {
-    let current = this.head
-    let currentIndex = 0
+    let current = this.head;
+    let currentIndex = 0;
 
-    while(currentIndex < index && current) {
-      current = current.next
-      currentIndex++
+    while (currentIndex < index && current) {
+      current = current.next;
+      currentIndex++;
     }
-    return current ? current.value : null
+    return current ? current.value : null;
   }
 
   //Вывести значение
@@ -198,7 +170,10 @@ export class LinkedList<T> implements ILinkedList<T> {
       res += `${curr.value} `;
       curr = curr.next;
     }
-    console.log(res);
   }
 
+  //Получить размер списка
+  getSize() {
+    return this.size;
+  }
 }

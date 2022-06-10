@@ -1,6 +1,6 @@
-import { TStatusObject } from "./statusObject";
+import { TStatusObject } from "./enums/statusObject";
 
-export interface StackObject {
+export interface IStackObject {
   char?: string | null;
   state: TStatusObject;
   head?: "top";

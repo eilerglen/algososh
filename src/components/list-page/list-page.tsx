@@ -1,181 +1,215 @@
 import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import { useEffect, useState } from "react";
-import { TStatusObject } from "../../types/statusObject";
+import { TStatusObject } from "../../types/enums/statusObject";
 import { listItemProps } from "../../types/listItem";
 import { pause } from "../../utils/utils";
 import { LinkedList, ILinkedList } from "./utils";
 import styles from "./list-page.module.css";
 import { Button } from "../../ui/button/button";
 import { Circle } from "../../ui/circle/circle";
-import { SHORT_PAUSE } from "../../constants/pauseLimits";
+import { SHORT_PAUSE } from "../../constants/constants";
 import { Input } from "../../ui/input/input";
 import { getNumber } from "../../utils/utils";
+import { LIMIT_SIZE_MAX, LIMIT_SIZE_MIN } from "../../constants/constants";
+import { ArrowIcon } from "../../ui/icons/arrow-icon";
 
 export const ListPage: React.FC = () => {
-  const maxNum = 12;
-  const minNum = 6;
-
   useEffect(() => {
-    const stringsArray = Array.from({ length: minNum }, () => `${getNumber()}`);
-    const basicState: listItemProps[] = [];
-    const newLinkedList = new LinkedList<string>(stringsArray);
-    stringsArray.forEach((item) => {
-      basicState.push({
+    //Создаем стартовый массив символов из 6 элементов
+    const randomStringsArray = Array.from(
+      { length: LIMIT_SIZE_MIN },
+      () => `${getNumber()}`
+    );
+
+    //Создаем инстанс класса связного списка и передаем в конструктор массив символов
+    const newLinkedList = new LinkedList<string>(randomStringsArray);
+
+    //заполняем стартовый рендер-массив дефолтными кружками с цифрами из массива
+    const initRenderCircle: listItemProps[] = randomStringsArray.map((item) => {
+      return {
         char: item,
         state: TStatusObject.Default,
-      });
+      };
     });
-
+    //Закидываем инстанс связного списка в стейт
     setLinkedList(newLinkedList);
-    setArrayCircles(basicState.reverse());
+
+    //Закидываем стартовый рендер-массив в стейт
+    setArrayCircles(initRenderCircle.reverse());
   }, []);
 
   const [value, setValue] = useState<string>("");
+  const [inProgress, setInProgress] = useState<boolean>(false);
+  const [disabledBtn, setDisabledBtn] = useState<boolean>(true);
   const [idx, setIdx] = useState<number>();
   const [arrayOfCircles, setArrayCircles] = useState<listItemProps[]>([]);
   const [linkedList, setLinkedList] = useState<ILinkedList<string>>();
 
-  const sortAndWait = async (arr: listItemProps[]) => {
-    setArrayCircles([...arr]);
-    await pause(SHORT_PAUSE);
-  };
+  //Функция отрисовки верхнего кружочка-превью 
 
-  const addToHead = async () => {
-    const copyArr = [...arrayOfCircles];
-    linkedList!.print();
-    // Добавляем новую голову в наш список
-    linkedList!.insertFromPosition(value, 0);
-    // Сразу извлекаем для рендера из списка новый элемент
-    const headValue = linkedList!.getNodeToIndex(0);
-    linkedList!.print();
-    // Подсвечиваем голову
-    copyArr[0] = {
-      ...copyArr[0],
+  const addRenderPreviewCircleTop = (
+    arr: any,
+    index: number,
+    value: string | null
+  ) => {
+    const firstElement = arr[index];
+    arr[index] = {
+      ...firstElement,
       adding: true,
       extraCircle: {
-        char: headValue ? headValue : "",
+        char: value ? value : "",
       },
     };
-    await sortAndWait([...copyArr]);
-    // Убираем подсветку и добавляем новую голову
-    copyArr[0] = {
-      ...copyArr[0],
-      adding: false,
-      extraCircle: undefined,
-    };
-    copyArr.unshift({
-      char: headValue ? headValue : "",
-      state: TStatusObject.Modified,
-    });
-    await sortAndWait([...copyArr]);
-    // Меняем стейт головы
-    copyArr[0].state = TStatusObject.Default;
-    setValue("");
   };
 
-  //Добавить в конце списка
+  //Функция сброса отрисовки верхнего кружочка-превью
+  const removeRenderPreviewCircleTop = (arr: any, index: number) => {
+    const firstElement = arr[index];
+    arr[index] = {
+      ...firstElement,
+      adding: false,
+      extraCircle: {
+        char: value ? value : "",
+      },
+    };
+  };
+
+  //Функция отрисовки нижнего кружочка-превью  элементов списка
+
+  const addRenderPreviewCircleBottom = (
+    arr: any,
+    index: number,
+    value?: string | null
+  ) => {
+    const firstElement = arr[index];
+    arr[index] = {
+      ...firstElement,
+      deleting: true,
+      extraCircle: {
+        char: value ? value : "",
+      },
+    };
+  };
+
+  // Создаем промежуточный массив для перезаписи стейта
+  const copyArr = [...arrayOfCircles];
+
+  //****** Добавление в начало списка *******
+
+  const addToHead = async () => {
+    setInProgress(true)
+    // Добавляем новую голову в наш список
+    linkedList!.addToHead(value);
+    // Получаем новый элемент из инстанса списка
+    const currentHeadValue = linkedList!.getNodeToIndex(0);
+    // Подсвечиваем добавляемый элемент в мини-кружке
+
+    //Рендерим превью-кружок
+    addRenderPreviewCircleTop(copyArr, 0, currentHeadValue);
+
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+
+    //Убираем превью-кружок
+    removeRenderPreviewCircleTop(copyArr, 0);
+    //Вставляем новый элемент в начало
+    copyArr.unshift({
+      char: currentHeadValue ? currentHeadValue : "",
+      state: TStatusObject.Modified,
+    });
+
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+
+    // Меняем статус головы
+    copyArr[0].state = TStatusObject.Default;
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+    setValue("");
+    setInProgress(false)
+  };
+
+  //***** Удалить из начала списка *****
+
+  const removeFromHead = async () => {
+    setInProgress(true)
+    // Удаляем элемент из списка и сразу берём его значение
+    const deletedElement = linkedList!.deleteHead();
+
+    // Смещаем голову в нижний кружок
+    addRenderPreviewCircleBottom(copyArr, 0, deletedElement);
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+    // Удаляем элемент и подсвечиваем новую голову
+    copyArr.shift();
+    copyArr[0].state = TStatusObject.Default;
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+    setInProgress(false)
+  };
+
+  //***** Добавить в конец списка ******
+
   const addToTail = async () => {
-    const copyArr = [...arrayOfCircles];
-    linkedList!.print();
+    setInProgress(true);
     // Добавляем элемент в хвост
     linkedList!.addToTail(value);
     // Получаем размер списка (он же индекс хвоста)
     const tailIdx = linkedList!.getSize() - 1;
+    console.log(tailIdx)
     // Сразу извлекаем из хвоста списка новый элемент
     const TailValue = linkedList!.getNodeToIndex(tailIdx);
-    linkedList!.print();
-    // Запускаем цикл
-    for (let i = 0; i <= tailIdx; i++) {
-      copyArr[i] = {
-        ...copyArr[i],
-        adding: true,
-        extraCircle: {
-          char: TailValue ? TailValue : "",
-        },
-      };
-      if (i > 0) {
-        copyArr[i - 1] = {
-          ...copyArr[i - 1],
-          adding: false,
-          extraCircle: undefined,
-          state: TStatusObject.Changing,
-        };
-      }
-      await sortAndWait([...copyArr]);
-    }
+    console.log(TailValue)
+    addRenderPreviewCircleTop(copyArr, tailIdx-1, TailValue);
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+    removeRenderPreviewCircleTop(copyArr, tailIdx-1)
+
     // Добавляем в хвост списка новый элемент
-    copyArr[copyArr.length - 1] = {
+    copyArr[copyArr.length] = {
       ...copyArr[copyArr.length],
       char: TailValue ? TailValue : "",
       state: TStatusObject.Modified,
       adding: false,
       extraCircle: undefined,
     };
-    await sortAndWait([...copyArr]);
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+
     // Меняем стейт хвоста
+
     copyArr.forEach((el) => (el.state = TStatusObject.Default));
-    await sortAndWait([...copyArr]);
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
     setValue("");
   };
 
-  //Добавить в конце списка
-  const removeFromHead = async () => {
-    const copyArr = [...arrayOfCircles];
-    linkedList!.print();
-    // Удаляем элемент из списка и сразу берём его значение
-    const deletedElement = linkedList!.deleteHead();
-    linkedList!.print();
-    // Смещаем голову в нижний кружок
-    copyArr[0] = {
-      ...copyArr[0],
-      char: "",
-      deleting: true,
-      extraCircle: {
-        char: "",
-      },
-    };
-
-    await sortAndWait([...copyArr]);
-    // Удаляем элемент и подсвечиваем новую голову
-    copyArr.shift();
-    copyArr[0].state = TStatusObject.Modified;
-    await sortAndWait([...copyArr]);
-    // Убираем подсветку с новой головы
-    copyArr[0].state = TStatusObject.Default;
-  };
-
-
-  //Удалить из конца списка
+  // ***** Удалить из конца списка *****
 
   const removeFromTail = async () => {
-    const copyArr = [...arrayOfCircles];
+    setInProgress(true)
+    //Получаем текущую длину массива
     const { length } = copyArr;
-    linkedList!.print();
-    // Получаем индекс хвоста
-    const tailIdx = linkedList!.getSize() - 1;
     // Удаляем элемент из списка и сразу берём его значение
-    const deletedElement = linkedList!.removeFromPosition(tailIdx);
-    linkedList!.print();
-    // Смещаем хвост в нижний кружок
-    copyArr[length - 1] = {
-      ...copyArr[length - 1],
-      char: "",
-      deleting: true,
-      extraCircle: {
-        char: deletedElement ? deletedElement : "",
-      },
-    };
-    await sortAndWait([...copyArr]);
+    const removeElement = linkedList!.deleteTail();
+    // Рендер нижнего кружка с удаляемым элементом
+    addRenderPreviewCircleBottom(copyArr, length - 1, removeElement);
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
     // Удаляем элемент и подсвечиваем новый хвост
     copyArr.pop();
-    copyArr[length - 2].state = TStatusObject.Modified;
-    await sortAndWait([...copyArr]);
     // Убираем подсветку с нового хвоста
     copyArr[length - 2].state = TStatusObject.Default;
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+    setInProgress(false)
+
   };
 
-  //Добавить по индексу
-  const addByIdx = async (idx: number) => {
+  //**** Добавить по индексу *****
+
+  const addToIndex = async (idx: number) => {
+    setInProgress(true)
     const copyArr = [...arrayOfCircles];
     linkedList!.print();
     // Добавляем новую элемент в наш список
@@ -199,7 +233,9 @@ export const ListPage: React.FC = () => {
           extraCircle: undefined,
           state: TStatusObject.Changing,
         };
-      await sortAndWait([...copyArr]);
+      // await sortAndWait([...copyArr]);
+      setArrayCircles([...copyArr]);
+      await pause(SHORT_PAUSE);
     }
     // Добавляем элемент по индексу
     copyArr[idx!] = {
@@ -211,16 +247,20 @@ export const ListPage: React.FC = () => {
       char: newValue ? newValue : "",
       state: TStatusObject.Modified,
     });
-    await sortAndWait([...copyArr]);
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+    // await sortAndWait([...copyArr]);
+
     // Убираем подсветку
     copyArr.forEach((el) => (el.state = TStatusObject.Default));
     setValue("");
     setIdx(undefined);
+    setInProgress(false)
   };
 
-  // Удалить по
-  const removeByIdx = async (idx: number) => {
-    const copyArr = [...arrayOfCircles];
+  // ****** Удалить по индексу *****
+  const removeToIndex = async (idx: number) => {
+    setInProgress(true)
     const deletingValue = copyArr[idx!].char;
     linkedList!.print();
     // Удаляем элемент из списка
@@ -230,24 +270,22 @@ export const ListPage: React.FC = () => {
     for (let i = 0; i <= idx!; i++) {
       copyArr[i].state = TStatusObject.Changing;
       if (i === idx) copyArr[i].noArrow = true;
-      await sortAndWait([...copyArr]);
+      setArrayCircles([...copyArr]);
+      await pause(SHORT_PAUSE);
     }
-    // Показываем удаляемый элемент
-    copyArr[idx!] = {
-      ...copyArr[idx!],
-      char: "",
-      deleting: true,
-      extraCircle: {
-        char: deletedElement ? deletedElement : "",
-      },
-    };
-    await sortAndWait([...copyArr]);
+    //Рендер нижнего кружочка с удаляемым элементом
+    addRenderPreviewCircleBottom (copyArr, idx!, deletedElement)
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+   
     // Удаляем элемент
     copyArr.splice(idx!, 1);
     // Убираем подсветку
     copyArr.forEach((el) => (el.state = TStatusObject.Default));
     setIdx(undefined);
-    await sortAndWait([...copyArr]);
+    setArrayCircles([...copyArr]);
+    await pause(SHORT_PAUSE);
+    setInProgress(false)
   };
 
   return (
@@ -267,16 +305,14 @@ export const ListPage: React.FC = () => {
           />
           <Button
             mixin={styles.button}
-            disabled={!value || arrayOfCircles.length > maxNum}
-            // isLoader={addingToHead}
+            disabled={!value || arrayOfCircles.length > LIMIT_SIZE_MAX}
             text="Добавить в head"
             type="button"
             onClick={() => addToHead()}
           />
           <Button
             mixin={styles.button}
-            // isLoader={addingToTail}
-            disabled={!value || arrayOfCircles.length > maxNum}
+            disabled={!value || arrayOfCircles.length > LIMIT_SIZE_MAX}
             text="Добавить в tail"
             type="button"
             onClick={() => addToTail()}
@@ -284,7 +320,6 @@ export const ListPage: React.FC = () => {
           <Button
             mixin={styles.button}
             disabled={arrayOfCircles.length <= 1}
-            // isLoader={deletingFromHead}
             text="Удалить из head"
             type="button"
             onClick={() => removeFromHead()}
@@ -292,7 +327,6 @@ export const ListPage: React.FC = () => {
           <Button
             mixin={styles.button}
             disabled={arrayOfCircles.length <= 1}
-            // isLoader={deletingFromTail}
             text="Удалить из tail"
             type="button"
             onClick={() => removeFromTail()}
@@ -313,25 +347,23 @@ export const ListPage: React.FC = () => {
           <Button
             mixin={styles.bigButton}
             disabled={
-              false
-              // !value ||
-              // !idx ||
-              // inProgress ||
-              // idx > arrayOfCircles.length - 1 ||
-              // arrayOfCircles.length > maxNum
+              !value ||
+              !idx ||
+              inProgress ||
+              idx > arrayOfCircles.length - 1 ||
+              arrayOfCircles.length > LIMIT_SIZE_MAX
             }
             // isLoader={addingByIdx}
             text="Добавить по индексу"
             type="button"
-            onClick={() => idx && addByIdx(idx)}
+            onClick={() => idx && addToIndex(idx)}
           />
           <Button
             mixin={styles.bigButton}
-            // isLoader={deletingByIdx}
             disabled={!idx || idx > arrayOfCircles.length - 1}
             text="Удалить по индексу"
             type="button"
-            onClick={() => idx && removeByIdx(idx)}
+            onClick={() => idx && removeToIndex(idx)}
           />
         </div>
         ;
@@ -353,7 +385,7 @@ export const ListPage: React.FC = () => {
                     : ""
                 }
               />
-              {/* {idx !== arrayOfCircles.length - 1 && (
+              {idx !== arrayOfCircles.length - 1 && (
                 <ArrowIcon
                   fill={
                     char.state === TStatusObject.Changing && !char.noArrow
@@ -361,7 +393,7 @@ export const ListPage: React.FC = () => {
                       : "#0032FF"
                   }
                 />
-              )} */}
+              )}
               {char.adding && (
                 <Circle
                   extraClass={styles.upperCircle}
