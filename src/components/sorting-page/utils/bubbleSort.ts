@@ -1,49 +1,70 @@
-import React from "react";
-import { swap, pause } from "../../../utils/utils";
+
+import { swap} from "../../../utils/utils";
 import { columnObject } from "../../../types/columns";
 import { TStatusObject } from "../../../types/enums/statusObject";
-import { SHORT_PAUSE } from "../../../constants/constants";
-import {
-  focusingCurrentElements,
-  checkSortedElement,
-} from "./modificateStatus";
 import { Direction } from "../../../types/enums/direction";
+import { focusingCurrentElements} from "./modificateStatus";
 
-export const bubbleSort = async (
-  option: Direction.Ascending,
-  setInitialArr: React.Dispatch<React.SetStateAction<columnObject[]>>,
-  initialArr: columnObject[]
-) => {
-  //   mode === "ascending" ? setAscendingRunning(true) : setDescendingRunning(true);
+
+// ***** BubbleSort ***** 
+
+export const bubbleSortAlgo = (
+  option: Direction,
+  initialArr: columnObject[],
+  step?: number
+): {resultArray: columnObject[]; countSteps: number} => {
+
+  // Создаем копию массива столбцов и меняем цвет на Default
   const arr = [...initialArr];
-  const { length } = arr;
+  arr.forEach(item => (item.state = TStatusObject.Default));
+  const {length} = arr;
+
+// Инициализация счётчика шагов алгоритма
+  let currentStep = 0;
+
+  //Внешний цикл
   for (let i = 0; i < length - 1; i++) {
-    for (let j = 0; j < length - 1 - i; j++) {
-      // детектим сравниваемые элементы
+    //Внутренний цикл
+    for (let j = 0; j < length - 1- i; j++) {
+
       focusingCurrentElements(arr, j, TStatusObject.Changing);
-      setInitialArr([...arr])
-      await pause( SHORT_PAUSE);
-      // Если один больше (меньше) другого - свапаем их
+      //Инкрементируем счетчик
+      currentStep++;
+      // Если все отсортировано - возвращаем результирующий объект
+      if (step === currentStep)
+        return {resultArray: arr, countSteps: currentStep};
+
+      // Задаем опции сравнения элементов по убыванию или по возрастанию  
       if (
         (option === Direction.Ascending ? arr[j].num : arr[j + 1].num) >
         (option === Direction.Ascending ? arr[j + 1].num : arr[j].num)
       ) {
-        setInitialArr([...arr])
+
+        // Двух сравниваемых стобцов обозначаем желтым цветом
+        focusingCurrentElements (arr, j, TStatusObject.Chosen)
+      
+         //Инкрементируем счетчик
+        currentStep++
+        if (step === currentStep)
+          return {resultArray: arr, countSteps: currentStep};
+
         swap(arr, j, j + 1);
+        arr[j].state =TStatusObject.Chosen;
+        arr[j + 1].state = TStatusObject.Chosen;
+
+        //Инкрементируем счетчик
+        currentStep++;
+        if (step === currentStep)
+          return {resultArray: arr, countSteps: currentStep};
       }
-      arr[j].state = TStatusObject.Default;
-      arr[j + 1].state = TStatusObject.Default;
+
+      //Возвращаем дефолтный вид двух текущих столбцов
+      focusingCurrentElements (arr, j, TStatusObject.Default)
+     
     }
-    checkSortedElement(arr, i);
-    
+    arr[arr.length - 1 - i].state = TStatusObject.Modified; 
   }
-  // Начинаем цикл
-
-  // Массив отсортирован
-  arr.forEach((item) => (item.state = TStatusObject.Modified));
-  setInitialArr([...arr]);
-
-  //   mode === "ascending"
-  //     ? setAscendingRunning(false)
-  //     : setDescendingRunning(false);
+   // Всех стобцы помечаем как измененные
+  arr.forEach(item => (item.state = TStatusObject.Modified));
+  return {resultArray: arr, countSteps: currentStep};
 };

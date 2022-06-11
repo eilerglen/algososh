@@ -16,7 +16,7 @@ export interface ILinkedList<T> {
   insertFromPosition: (value: T, index: number) => void;
   removeFromPosition: (index: number) => T | null;
   getSize: () => number;
-  print: () => void;
+ 
 }
 
 export class LinkedList<T> implements ILinkedList<T> {
@@ -162,15 +162,6 @@ export class LinkedList<T> implements ILinkedList<T> {
     return current ? current.value : null;
   }
 
-  //Вывести значение
-  print() {
-    let curr = this.head;
-    let res = "";
-    while (curr) {
-      res += `${curr.value} `;
-      curr = curr.next;
-    }
-  }
 
   //Получить размер списка
   getSize() {
