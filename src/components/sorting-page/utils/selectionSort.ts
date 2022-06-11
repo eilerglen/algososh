@@ -1,70 +1,88 @@
-import React from "react";
-import { swap, pause } from "../../../utils/utils";
-import { columnObject } from "../../../types/columns";
+import { swap } from "../../../utils/utils";
 import { TStatusObject } from "../../../types/enums/statusObject";
-import { SHORT_PAUSE } from "../../../constants/constants";
-import {
-  focusingCheckedElement,
-  focusingInitElement,
-  focusingModifiedElement,
-  focusingMinMaxElement,
-} from "./modificateStatus";
 import { Direction } from "../../../types/enums/direction";
+import { columnObject } from "../../../types/columns";
 
+export const selectionSortAlgo = (
+  option: Direction,
+  initialArr: columnObject[],
+  step?: number
+): { resultArray: columnObject[]; countSteps: number } => {
+  const arrTemp = [...initialArr];
 
-export const selectionSort = async (
-  option: Direction.Ascending,
-  setInitialArr: React.Dispatch<React.SetStateAction<columnObject[]>>,
-  initialArr: columnObject[]
-) => {
-  const arr = [...initialArr];
-  setInitialArr([...arr]);
-  const { length } = arr;
+  arrTemp.forEach((item) => (item.state = TStatusObject.Default));
+  // Начинаем цикл
+  const { length } = arrTemp;
 
-  //Начинаем внешний цикл
+  // Инициализация счётчика шагов алгоритма
 
+  let currentStep = 0;
   for (let i = 0; i < length; i++) {
     let swapInd = i;
-    focusingInitElement(arr, i)
-    setInitialArr([...arr])
-    await pause(SHORT_PAUSE)
+    arrTemp[i].state = TStatusObject.Chosen;
 
-    //Начинаем внутренний цикл
+    //Инкрементируем счетчик
+    currentStep++;
+    if (step && step === currentStep)
+      return { resultArray: arrTemp, countSteps: currentStep };
 
+    // Начинаем цикл по оставшимся элементам
     for (let j = i + 1; j < length; j++) {
-      focusingCheckedElement(arr, j)
-      setInitialArr([...arr])
-      await pause(SHORT_PAUSE)
-      if (
-        ( option === Direction.Ascending? arr[swapInd].num : arr[j].num) > ( option === Direction.Ascending ? arr[j].num : arr[swapInd].num)
-      ) {
-        arr[j].state =  TStatusObject.Chosen; //если у нас i-ый элемент(swapInd) больше j то делаем j-ый элемент желтым
-        arr[swapInd].state =
-          i === swapInd ?  TStatusObject.Chosen : TStatusObject.Default; //задаем цвет столбика по такому правилу если у нас index i равен (swapInd) делаем его желтым цветом ,остальное дефолтным
-        swapInd = j; //начинаем переопределять индекс наименьшего элемента. Двигаем его вправо, если есть эелементы меньше до самого минимального
-        setInitialArr([...arr])
-        await pause(SHORT_PAUSE)
-      }
-      focusingMinMaxElement(arr, j, swapInd)
-    }
+      // Подсвечиваем кандидата на свап фиолетовым
+      arrTemp[j].state = TStatusObject.Changing;
 
-    if (i === swapInd) {
-      //Если у нас i-ый элемент оказался минимальным, то соотвествующий столбик красим в зеленый
-      //То есть нчиего местами менять не нужно
-      focusingModifiedElement(arr, i) 
-      setInitialArr([...arr])
-      await pause(SHORT_PAUSE)
+      //Инкрементируем счетчик
+
+      currentStep++;
+      if (step && step === currentStep)
+        return { resultArray: arrTemp, countSteps: currentStep };
+      if (
+        (option === Direction.Ascending ? arrTemp[swapInd].num : arrTemp[j].num) >
+        (option === Direction.Ascending ? arrTemp[j].num : arrTemp[swapInd].num)
+      ) {
+        arrTemp[j].state = TStatusObject.Chosen;
+        arrTemp[swapInd].state =
+          i === swapInd ? TStatusObject.Chosen : TStatusObject.Default;
+        swapInd = j;
+
+        //Инкрементируем счетчик
+        currentStep++;
+        if (step && step === currentStep)
+          return { resultArray: arrTemp, countSteps: currentStep };
+      }
+      // Снимаем выделение с обычных элементов
+      if (j !== swapInd) arrTemp[j].state = TStatusObject.Default;
     }
-   
+    // Если сортируемый элемент сам является экстремумом - рисуем его как "modified"
+    if (i === swapInd) {
+      arrTemp[i].state = TStatusObject.Modified;
+
+      //Инкрементируем счетчик
+
+      currentStep++;
+      if (step && step === currentStep)
+        return { resultArray: arrTemp, countSteps: currentStep };
+    }
+    // В противном случае нужен свап и замена цветов (нужно 2 рендера)
     else {
-       //Если же нет, то
-      swap(arr, i, swapInd); //меняем i-ый элемент местами с минимальным (здесь как раз главный обмен и происходит!)
-      setInitialArr([...arr])
-      focusingModifiedElement(arr, i) //i-ый элемент: соотвествующий столбик красим в зеленый
-      arr[swapInd].state = TStatusObject.Default; 
+      swap(arrTemp, i, swapInd);
+      //arr[swapInd].state = ElementStates.Default;
+      arrTemp[i].state = TStatusObject.Modified;
+
+      //Инкрементируем счетчик
+
+      currentStep++;
+      if (step && step === currentStep)
+        return { resultArray: arrTemp, countSteps: currentStep };
+
+      arrTemp[swapInd].state = TStatusObject.Default;
+
+      //Инкрементируем счетчик
+
+      currentStep++;
+      if (step && step === currentStep)
+        return { resultArray: arrTemp, countSteps: currentStep };
     }
   }
-
+  return { resultArray: arrTemp, countSteps: currentStep };
 };
-
-

@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { SolutionLayout } from "../../ui/solution-layout/solution-layout";
 import { Button } from "../../ui/button/button";
 import { RadioButton } from "../../ui/radio-button/radio-button";
-import { swap, pause } from "../../utils/utils";
+import { pause } from "../../utils/utils";
 import stylesSortingPage from "./sorting.page.module.css";
 import { Column } from "../../ui/column/column";
 import { TStatusObject } from "../../types/enums/statusObject";
 import { Direction } from "../../types/enums/direction";
 import { generateRandomArr } from "../../utils/generateRandomArr";
-import { bubbleSort } from "./utils/bubbleSort";
-import { selectionSort } from "./utils/selectionSort";
+import { bubbleSortAlgo } from "./utils/bubbleSort";
+import { selectionSortAlgo } from "./utils/selectionSort";
 import { columnObject } from "../../types/columns";
+import { SHORT_PAUSE } from "../../constants/constants";
 
 export const SortingPage: React.FC = () => {
   const [sortType, setSortType] = useState<string>("selection");
@@ -25,22 +26,34 @@ export const SortingPage: React.FC = () => {
     generateArr();
   }, []);
 
-
   const startSort = async (direction: any, sortType: string) => {
+    let stepCounter = 1
     //Сброс уже отсортированного массива.
     if (initialArr[0].state === 'modified') {
       setInitialArr(initialArr.map((item: columnObject) => {
         item.state = TStatusObject.Default;
         return item
       }))
+      stepCounter = 1
     }
     //Блокирование кнопок.
     setInProgress(true);
-    //Сортировка выбором.
-    if (sortType === "selection") await selectionSort(direction, setInitialArr, initialArr);
+    const tempArr = [...initialArr]
+    if (sortType === "selection") {
+      while (stepCounter !== selectionSortAlgo(direction, tempArr).countSteps) {
+        setInitialArr(selectionSortAlgo(direction, tempArr, stepCounter).resultArray)
+        await pause(SHORT_PAUSE)
+        stepCounter++;
+      }
+    }
     //Сортировка пузырьком.
     else {
-      await bubbleSort(direction, setInitialArr, initialArr)
+      while (stepCounter <= bubbleSortAlgo(direction, tempArr).countSteps) {
+        setInitialArr(bubbleSortAlgo (direction, tempArr, stepCounter).resultArray)
+        await pause(SHORT_PAUSE)
+        stepCounter++;
+      }
+
     }
     //Разблокирование кнопок.
     setInProgress(false);
@@ -71,6 +84,7 @@ export const SortingPage: React.FC = () => {
           type="submit"
           onClick={() => startSort('ascending', sortType)
           }
+    
           disabled={inProgress}
         />
         <Button
@@ -80,6 +94,7 @@ export const SortingPage: React.FC = () => {
           type="submit"
           onClick={() => startSort('descending', sortType)
           }
+    
           disabled={inProgress}
         />
         <Button

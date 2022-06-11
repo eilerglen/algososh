@@ -155,10 +155,8 @@ export const ListPage: React.FC = () => {
     linkedList!.addToTail(value);
     // Получаем размер списка (он же индекс хвоста)
     const tailIdx = linkedList!.getSize() - 1;
-    console.log(tailIdx)
     // Сразу извлекаем из хвоста списка новый элемент
     const TailValue = linkedList!.getNodeToIndex(tailIdx);
-    console.log(TailValue)
     addRenderPreviewCircleTop(copyArr, tailIdx-1, TailValue);
     setArrayCircles([...copyArr]);
     await pause(SHORT_PAUSE);
@@ -210,12 +208,10 @@ export const ListPage: React.FC = () => {
   const addToIndex = async (idx: number) => {
     setInProgress(true)
     const copyArr = [...arrayOfCircles];
-    linkedList!.print();
     // Добавляем новую элемент в наш список
     linkedList!.insertFromPosition(value, idx);
     // Сразу извлекаем для рендера из списка новый элемент
     const newValue = linkedList!.getNodeToIndex(idx);
-    linkedList!.print();
     // Запускаем перебор по элементам массива
     for (let i = 0; i <= idx!; i++) {
       copyArr[i] = {
@@ -261,10 +257,8 @@ export const ListPage: React.FC = () => {
   const removeToIndex = async (idx: number) => {
     setInProgress(true)
     const deletingValue = copyArr[idx!].char;
-    linkedList!.print();
     // Удаляем элемент из списка
     const deletedElement = linkedList!.removeFromPosition(idx);
-    linkedList!.print();
     // Запускаем перебор по элементам массива
     for (let i = 0; i <= idx!; i++) {
       copyArr[i].state = TStatusObject.Changing;
