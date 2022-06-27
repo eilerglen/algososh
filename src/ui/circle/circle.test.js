@@ -46,10 +46,10 @@ describe('Точный рендер', () => {
         const tree = renderer.create(<Circle state={'modified'} />).toJSON();
         expect(tree).toMatchSnapshot();
     });
-    // it('Рендер с состоянием change', () => {
-    //     const tree = renderer.create(<Circle state={'change' } />).toJSON();
-    //     expect(tree).toMatchSnapshot();
-    // });
+    it('Рендер с состоянием change', () => {
+        const tree = renderer.create(<Circle state={'change' } />).toJSON();
+        expect(tree).toMatchSnapshot();
+    });
 
 
 })
