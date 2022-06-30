@@ -23,16 +23,19 @@ export const changeState = (
 export const stringReverseAlgo = async (arr: Array<ISymbolProps>, callback: Function, change: string, modified: string
 ) => {
   let end = arr.length - 1;
+  let step = 0;
   for (let start = 0; start <= end; start++) {
     if (start === end) {
          callback(arr, change, start, end)
          callback(arr, modified, start, end)
         }
+    
     await callback(arr, change, start, end);
     swap(arr, start, end);
     await callback(arr, modified, start, end);
+    step ++
     end--;
 
   }
-  return arr;
+  return {arr, step};
 };

@@ -15,8 +15,14 @@ export const RadioButton: FC<RadioProps> = ({
   const id = generateID();
 
   return (
-    <div className={`${styles.content} ${mixin}`}>
-      <input className={styles.input} type="radio" id={id} {...rest} />
+    <div data-testid="radioWrapper" className={`${styles.content} ${mixin}`}>
+      <input
+        data-testid="radioButton"
+        className={styles.input}
+        type="radio"
+        id={id}
+        {...rest}
+      />
       <label className={`text text_type_button ${styles.label}`} htmlFor={id}>
         {label}
       </label>
