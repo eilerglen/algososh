@@ -1,4 +1,3 @@
-import { swap } from "../../utils/utils";
 import { TStatusObject } from "../../types/enums/statusObject";
 
 export interface ISymbolProps {
@@ -20,15 +19,15 @@ export const changeState = (
 };
 
 //Изменить статус/внешний вид символов.
-export const stringReverseAlgo = (str: string, step?: number) => {
+export const stringReverseAlgo = (str: string) => {
   let stepCounter = 0
-  const resArray = str.split("").map(item => item)
-  let end = resArray.length - 1;
+  
+  let end = str.length - 1;
   for (let start = 0; start <= end; start++) {
-    // if(start === end) break
-    swap(resArray, start, end)
+    if(start === end) continue
     end--
     stepCounter++
   }
+  console.log(stepCounter)
   return stepCounter
 };

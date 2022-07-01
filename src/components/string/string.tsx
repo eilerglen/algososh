@@ -8,7 +8,6 @@ import { swap, pause } from "../../utils/utils";
 import styles from "./string.module.css";
 import { SHORT_PAUSE } from "../../constants/constants";
 import { ISymbolProps } from "./utils";
-import { changeState } from "./utils";
 import { stringReverseAlgo } from "./utils";
 
 export const StringComponent: React.FC = () => {
@@ -38,7 +37,7 @@ export const StringComponent: React.FC = () => {
     setInProgress(true);
     const temp = [...charArr]
     const stepCounter = stringReverseAlgo(inputValue)
-    while(count != stepCounter) {
+    while(count <= stepCounter) {
       
       temp[count].state = TStatusObject.Changing;
       temp[inputValue.length - (count+1)].state = TStatusObject.Changing;
