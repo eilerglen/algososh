@@ -20,22 +20,15 @@ export const changeState = (
 };
 
 //Изменить статус/внешний вид символов.
-export const stringReverseAlgo = async (arr: Array<ISymbolProps>, callback: Function, change: string, modified: string
-) => {
-  let end = arr.length - 1;
-  let step = 0;
+export const stringReverseAlgo = (str: string, step?: number) => {
+  let stepCounter = 0
+  const resArray = str.split("").map(item => item)
+  let end = resArray.length - 1;
   for (let start = 0; start <= end; start++) {
-    if (start === end) {
-         callback(arr, change, start, end)
-         callback(arr, modified, start, end)
-        }
-    
-    await callback(arr, change, start, end);
-    swap(arr, start, end);
-    await callback(arr, modified, start, end);
-    step ++
-    end--;
-
+    // if(start === end) break
+    swap(resArray, start, end)
+    end--
+    stepCounter++
   }
-  return {arr, step};
+  return stepCounter
 };

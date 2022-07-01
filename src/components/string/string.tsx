@@ -16,47 +16,50 @@ export const StringComponent: React.FC = () => {
   const [charArr, setCharArr] = useState<Array<ISymbolProps>>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
-  // Меняем статус кружка с паузой
+    //Рендер вводимых символов.
+    const renderInputNumbers = (evt: React.ChangeEvent<HTMLInputElement>) => {
+      const targetInput = evt.currentTarget
+      setInputValue(targetInput.value)
+      setCharArr(
+        targetInput.value.split("").map((symbol: string) => {
+          return {
+            symbol: symbol,
+            state: TStatusObject.Default,
+          };
+        })
+      );
+    };
 
-  const changeStateRender = async (
-    arr: Array<ISymbolProps>,
-    status: string,
-    startIndex: number,
-    endIndex: number
-  ) => {
-    changeState(arr, status, startIndex, endIndex);
-    setCharArr([...arr]);
-    await pause(SHORT_PAUSE);
-  };
 
   // Главная функция
 
-  const stringReverse = async (arr: Array<ISymbolProps>) => {
+  const stringReverse = async () => {
+    let count = 0
     setInProgress(true);
-    stringReverseAlgo(
-      arr,
-      changeStateRender,
-      TStatusObject.Changing,
-      TStatusObject.Modified
-    );
+    const temp = [...charArr]
+    const stepCounter = stringReverseAlgo(inputValue)
+    while(count != stepCounter) {
+      
+      temp[count].state = TStatusObject.Changing;
+      temp[inputValue.length - (count+1)].state = TStatusObject.Changing;
+      setCharArr([...temp]);
+      await pause( SHORT_PAUSE);
+      swap(temp, count, temp.length-(count+1) )
+      
+      temp[count].state = TStatusObject.Modified;
+      temp[inputValue.length - (count+1)].state = TStatusObject.Modified;
+      setCharArr([...temp]);
+      await pause( SHORT_PAUSE );
+      count++
+
+    }
+
     setInProgress(false);
   };
 
-  //Рендер вводимых символов.
-  const renderInputNumbers = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const targetInput = evt.currentTarget
-    setInputValue(targetInput.value)
-    setCharArr(
-      targetInput.value.split("").map((symbol: string) => {
-        return {
-          symbol: symbol,
-          state: TStatusObject.Default,
-        };
-      })
-    );
-  };
+  
 
-  //Запуск функции перестановки по нажатию кнопки.
+  //Запуск главной функции перестановки по нажатию кнопки.
   const handleStartAnimation = async () => {
     //Вернуть в дефолтное состояние, если строка уже отсортирована.
     if (charArr[0].state === "modified") {
@@ -67,13 +70,9 @@ export const StringComponent: React.FC = () => {
         })
       );
     }
-    stringReverse(charArr);
+    stringReverse();
   };
 
-  //Сброс инпута.
-  const resetInput = () => {
-    setInputValue("");
-  };
 
   return (
     <SolutionLayout title="Строка">
