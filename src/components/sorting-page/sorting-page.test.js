@@ -87,6 +87,14 @@ describe("Check algo for selectionSort", () => {
     expect(selectionSortAlgo("ascending", testArr).resultArray)
     .toStrictEqual(testObj.resArrAscending)
   })
+  it("Check succecs sorting empty array", () => {
+    expect(selectionSortAlgo("ascending", []).resultArray)
+    .toStrictEqual(testObj.resEmpty)
+  })
+  it("Check succecs sorting oneElemArray", () => {
+    expect(selectionSortAlgo("ascending", testObj.resArrOneElement).resultArray)
+    .toStrictEqual(testObj.resArrOneElement)
+  })
 
 })
 
@@ -127,7 +135,7 @@ describe("Check algo for bubbleSort", () => {
     expect(bubbleSortAlgo("ascending", []).resultArray)
     .toStrictEqual(testObj.resEmpty)
   })
-  it("Check succecs sorting empty array", () => {
+  it("Check succecs sorting oneElemArray", () => {
     expect(bubbleSortAlgo("ascending", testObj.resArrOneElement).resultArray)
     .toStrictEqual(testObj.resArrOneElement)
   })
