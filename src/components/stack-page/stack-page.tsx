@@ -33,6 +33,7 @@ export const StackPage: React.FC = () => {
     setRenderValues([...renderValues]);
     await pause(SHORT_PAUSE);
     renderValues[renderValues.length - 1].state = TStatusObject.Default;
+    // await pause(SHORT_PAUSE);
     setRenderValues([...renderValues]);
     resetInput();
     setInProgress(false);
