@@ -18,47 +18,76 @@ describe("reverse string ", () => {
 
   describe("check animation of algorhytms", () => {
     it("correct reverse string", () => {
-      cy.get("input", )
+      cy.get("input").type("1234")
+      cy.contains("Развернуть").click();
+
+      cy.get("[class*=circle_circle]")
+        .should("have.length", 4)
+        .each(($item, index) => {
+          if(index === 0) cy.wrap().contains('1')
+          if(index === 1) cy.wrap().contains('2')
+          if(index === 2) cy.wrap().contains('3')
+          if(index === 3) cy.wrap().contains('4')
+
+          //Changing 
+
+          if (index === 0 || index === 3) {
+            cy.wrap($item).should(
+              "have.css",
+              "border",
+              "4px solid rgb(210, 82, 225)"
+            );
+            if (index === 0) expect($item).to.contain("1");
+            if (index === 2) expect($item).to.contain("4");
+          }
+        })
+       cy.wait(500)
+
+       cy.get("[class*=circle_circle]")
+        .each(($item, index) => {
+          if(index === 0 || index === 3) {
+            // Modified 
+            cy.wrap($item).should(
+              "have.css",
+              "border",
+              "4px solid rgb(127, 224, 81)"
+            );
+            if(index === 0 )  cy.wrap().contains('4')
+            if(index === 2 )  cy.wrap().contains('1')
+          }
+        })
+
+        cy.wait(500)
+
+        //Второй шаг
+
+         cy.get("[class*=circle_circle]")
+         .each(($item, index) => {
+           if(index === 1 || index === 2) {
+             cy.wrap($item).should(
+               "have.css",
+               "border",
+               "4px solid rgb(210, 82, 225)"
+             );
+             if(index === 1 )  cy.wrap().contains('3')
+             if(index === 3 )  cy.wrap().contains('2')
+           }
+         })
+         cy.wait(500) 
+         cy.get("[class*=circle_circle]")
+         .each(($item, index) => {
+           if(index === 1 || index === 2) {
+             cy.wrap($item).should(
+               "have.css",
+               "border",
+               "4px solid rgb(127, 224, 81)"
+             );
+             if(index === 1 )  cy.wrap().contains('3')
+             if(index === 3 )  cy.wrap().contains('2')
+           }
+         })
+
+
     })
-  })
-
-  it('button should be disabled on start', () => {
-    cy.get('input').type('123')
-    cy.get('button').eq(1).click()
-
-    cy.get("[class*=circle_circle]")
-    .should("have.length", 3)
-    .each(($item, index) => {
-      if(index === 0) cy.wrap().contains('1')
-      if(index === 1) cy.wrap().contains('2')
-      if(index === 2) cy.wrap().contains('3')
-
-      if(index === 0 || index === 2) {
-        cy.wrap($item).should(
-          "have.css",
-          "border",
-          "4px solid rgb(0, 50, 255)"
-        )
-      }
-
-    })
-
-    cy.wait(5000)
-
-    cy.get("[class*=circle_circle]").each(($el, index) => {
-      if (index === 0 || index === 2) {
-        cy.wrap($el).should(
-          "have.css",
-          "border",
-          "4px solid rgb(127, 224, 81)"
-        );
-        if (index === 0) expect($el).to.contain(2);
-        if (index === 2) expect($el).to.contain(0);
-      }
-    });
-
-    cy.wait(500);
-
-     
   })
 })
