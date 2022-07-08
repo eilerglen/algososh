@@ -22,8 +22,9 @@ export const Input: React.FC<InputProps> = ({
       : `Максимальное число — ${max}`;
 
   return (
-    <div className={`${styles.content} ${extraClass}`}>
+    <div data-testid='inputWrapper' className={`${styles.content} ${extraClass}`}>
       <input
+        data-testid='input'
         className={`${styles.input} text text_type_input text_color_input`}
         placeholder={placeholder}
         type={type}

@@ -1,4 +1,3 @@
-import { swap } from "../../utils/utils";
 import { TStatusObject } from "../../types/enums/statusObject";
 
 export interface ISymbolProps {
@@ -20,19 +19,15 @@ export const changeState = (
 };
 
 //Изменить статус/внешний вид символов.
-export const stringReverseAlgo = async (arr: Array<ISymbolProps>, callback: Function, change: string, modified: string
-) => {
-  let end = arr.length - 1;
+export const stringReverseAlgo = (str: string) => {
+  let stepCounter = 0
+  
+  let end = str.length - 1;
   for (let start = 0; start <= end; start++) {
-    if (start === end) {
-         callback(arr, change, start, end)
-         callback(arr, modified, start, end)
-        }
-    await callback(arr, change, start, end);
-    swap(arr, start, end);
-    await callback(arr, modified, start, end);
-    end--;
-
+    if(start === end) continue
+    end--
+    stepCounter++
   }
-  return arr;
+  console.log(stepCounter)
+  return stepCounter
 };

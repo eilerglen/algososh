@@ -15,7 +15,7 @@ export class Stack<T> implements IStack<T> {
   };
 
   pop = async () => {
-    this.container.push();
+    this.container.pop();
   };
 
   peak = () => {
