@@ -13,7 +13,7 @@ describe("Check stepCounter", ()=> {
 describe("Check stepCounter", ()=> {
   let testString = "1234567"
   const steps = stringReverseAlgo(testString)
-  it("Check step of even", ()=> {
+  it("Check step of od", ()=> {
     expect(steps).toBe(3)
   })
 })

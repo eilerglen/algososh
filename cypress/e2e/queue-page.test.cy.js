@@ -3,7 +3,7 @@ describe("successfully loads", () => {
     cy.visit("http://localhost:3000/queue");
   });
   // Тест кнопки
-  describe("Test render Button ", () => {
+  describe("Test status Button ", () => {
     it("test button disabled", () => {
       cy.contains("Добавить").as("button");
       cy.get("@button").should("be.disabled");
@@ -14,7 +14,7 @@ describe("successfully loads", () => {
     });
   });
   // Тест рендера анимации
-  describe("Check render animation", () => {
+  describe("check animation of algorhytms", () => {
     it("Check add elements of queue", () => {
       cy.get("input").type("H");
       cy.contains("Добавить").click();

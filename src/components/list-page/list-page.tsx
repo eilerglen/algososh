@@ -14,6 +14,7 @@ import { LIMIT_SIZE_MAX, LIMIT_SIZE_MIN } from "../../constants/constants";
 import { ArrowIcon } from "../../ui/icons/arrow-icon";
 
 export const ListPage: React.FC = () => {
+
   useEffect(() => {
     //Создаем стартовый массив символов из 6 элементов
     const randomStringsArray = Array.from(
@@ -23,6 +24,8 @@ export const ListPage: React.FC = () => {
 
     //Создаем инстанс класса связного списка и передаем в конструктор массив символов
     const newLinkedList = new LinkedList<string>(randomStringsArray);
+    console.log(randomStringsArray)
+    console.log(newLinkedList)
 
     //заполняем стартовый рендер-массив дефолтными кружками с цифрами из массива
     const initRenderCircle: listItemProps[] = randomStringsArray.map((item) => {
@@ -286,6 +289,7 @@ export const ListPage: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.containerInput}>
           <Input
+            name ="value"
             extraClass={styles.input}
             placeholder="Введите значение"
             min={1}
@@ -328,6 +332,7 @@ export const ListPage: React.FC = () => {
         ;
         <div className={styles.containerInput}>
           <Input
+            name ="index"
             type="text"
             extraClass={styles.input}
             placeholder="Введите индекс"

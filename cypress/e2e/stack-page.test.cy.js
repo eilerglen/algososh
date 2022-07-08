@@ -3,7 +3,7 @@ describe("successfully loads", () => {
     cy.visit("http://localhost:3000/stack");
   });
 
-  describe("Test render Button ", () => {
+  describe("Check status Button ", () => {
     it("test button disabled", () => {
       cy.contains("Добавить").as("button");
       cy.get("@button").should("be.disabled");
@@ -14,7 +14,7 @@ describe("successfully loads", () => {
     });
   });
 
-  describe("Проверка работы анимации изменения структуры данных", () =>{
+  describe("check animation of algorhytms", () =>{
     it("Check add some elements", () => {
 
      //Add first elem

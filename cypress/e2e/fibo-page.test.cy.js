@@ -4,7 +4,7 @@ describe("successfully loads", () => {
     cy.visit("http://localhost:3000/fibonacci")
   })
 
-  describe("Test render Button ", () => {
+  describe("Check status Button ", () => {
     it("test button disabled", () => {
         cy.contains("Рассчитать").as("button")
         cy.get("@button").should("be.disabled")

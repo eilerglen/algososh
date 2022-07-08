@@ -42,15 +42,4 @@ describe("Check instance of class Stack", () => {
   
   })
 
- 
-  // it("Check pop item to stack", () => {
-  //   stack.pop()
-  //   expect(stack.peak()).toBe(1)
-  
-  // })
-  // it("Check clear stack", () => {
-  //   stack.clear()
-  //   expect(stack.getSize()).toBeNull
-  
-  // })
 })

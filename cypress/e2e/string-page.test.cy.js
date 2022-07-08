@@ -1,6 +1,6 @@
 
 describe("reverse string ", () => {
-  beforeEach(function () {
+  beforeEach(() => {
     cy.visit("http://localhost:3000/recursion");
 })
 
