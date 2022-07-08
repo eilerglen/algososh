@@ -36,13 +36,21 @@ export const QueuePage: React.FC = () => {
   //Добавить в очередь
   const handleEnqueue = async () => {
     setInProgress(true);
+    
     queue.enqueue(inputValue);
+    if(queue.isEmpty()) {
+     
+    }
+   
     //Получаем индексы
     const currentHead = queue.getHead();
     const currentTail = queue.getTail();
     //Получаем значения по индексам
     const valueHead = queue.getValue(currentHead);
     const valueTail = queue.getValue(currentTail);
+    tempArr[currentTail].state = TStatusObject.Changing;
+    setRenderValues([...tempArr]);
+    await pause(SHORT_PAUSE);
     //Заполняем массив объектами из очереди
     tempArr[currentHead].char = valueHead;
     tempArr[currentHead].head = "head";
@@ -51,9 +59,6 @@ export const QueuePage: React.FC = () => {
       tempArr[currentTail].char = valueTail;
     }
     tempArr[currentTail].char = valueTail;
-    tempArr[currentTail].state = TStatusObject.Changing;
-    setRenderValues([...tempArr]);
-    await pause(SHORT_PAUSE);
     tempArr[currentTail].tail = "tail";
     tempArr[currentTail].state = TStatusObject.Default;
     setRenderValues([...tempArr]);
@@ -65,29 +70,28 @@ export const QueuePage: React.FC = () => {
   //Удалить из очереди
   const handleDequeue = async () => {
     setInProgress(true);
-    const prevHead = queue.getHead();
-    const currentTail = queue.getTail();
-
-    if (prevHead === currentTail) {
-      handleClear();
-    }
-    queue.dequeue();
-    const currentHead = queue.getHead();
-    if (currentHead > 0) {
-      tempArr[prevHead].head = "";
-      tempArr[prevHead].char = "";
-      tempArr[prevHead].state = TStatusObject.Changing;
-      setRenderValues([...tempArr]);
-      await pause(SHORT_PAUSE);
-      tempArr[prevHead].state = TStatusObject.Default;
-    }
-
-    tempArr[currentHead].head = "head";
-    setRenderValues([...tempArr]);
-    await pause(SHORT_PAUSE);
-    tempArr[currentHead].state = TStatusObject.Default;
-    setRenderValues([...tempArr]);
-    await pause(SHORT_PAUSE);
+    // Проверяем, догнала ли голова хвост, если да - сброс
+    const head = queue.getHead();
+    const tail = queue.getTail();
+    if (head === tail) handleClear();
+    else {
+      queue.dequeue()
+      const currentHead = queue.getHead();
+      const currentTail = queue.getTail();
+      if (currentHead > 0) {
+        tempArr[currentHead -1].head = "";
+        tempArr[currentHead -1].char = "";
+      }  
+        tempArr[currentHead].state = TStatusObject.Changing;
+        setRenderValues([...tempArr]);
+        await pause(SHORT_PAUSE);
+        tempArr[currentHead].char =  queue.getValue(currentHead) ;
+        tempArr[currentHead].head = "head";
+        setRenderValues([...tempArr]);
+        await pause(SHORT_PAUSE);
+        tempArr[currentHead].state = TStatusObject.Default;
+      }
+   
     setInProgress(false);
   };
 
@@ -142,6 +146,7 @@ export const QueuePage: React.FC = () => {
                 <Circle
                   letter={elem.char}
                   state={elem.state}
+                  index = {ind}
                   head={elem.head}
                   tail={elem.tail}
                 />

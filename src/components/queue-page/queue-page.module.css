@@ -4,6 +4,16 @@
     margin-top: 20px;
 }
 
+.circleList {
+    list-style-type: none;
+    margin-top: 48px;
+    margin-bottom: 48px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+
 .input {
     margin-right: 12px;
     max-width: 377px;
